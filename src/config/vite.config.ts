@@ -21,7 +21,7 @@ export default defineConfig({
     port: 3000,
   },
   build: {
-    chunkSizeWarningLimit: 1000, // Increase chunk size warning limit to 1000 KB
+    chunkSizeWarningLimit: 2000, // Increase chunk size warning limit to 2000 KB
   },
   optimizeDeps: {
     // Explicitly include common dependencies to speed up cold start
