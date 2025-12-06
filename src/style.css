@@ -1,0 +1,1419 @@
+/* ========================================================================== */
+/* === GLOBAL BASE STYLES (Original Content) ================================ */
+/* ========================================================================== */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+}
+
+/* Global scrollbar hiding (webkit) - moved from index.css */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom styles for scrollbar hiding (retained for existing usage) - moved from index.css */
+.sidebar-nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar-nav-scroll {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Main Background: Platinum (#F7F7F7) - for sections and cards */
+body {
+  background-color: var(--color-background);
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Primary Text: Charcoal Black (#232323) - for main headings and body text */
+h1,
+h2,
+h3 {
+  color: var(--color-text-main);
+}
+
+p,
+label,
+div {
+  color: var(--color-text-main);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+/* Accent Color: True Red (#ED1C24) - for buttons, highlights, and important notices */
+.button {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 20px;
+  border: 1px solid var(--color-primary);
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.highlight {
+  color: var(--color-primary-dark);
+}
+
+/* Secondary Accent: Slate Gray (#767676) - for subheadings, borders, and icons */
+h4,
+h5,
+h6 {
+  color: var(--color-text-inactive);
+}
+
+.border {
+  border: 1px solid var(--color-border-light);
+}
+
+/* Card/Panel Background: White (#FFFFFF) - for panels, card bodies, and sidebar backgrounds */
+.card,
+.panel {
+  background-color: var(--color-primary-light);
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Hover: Silver (#BDBDBD) - for a subtle hover effect */
+.button:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+/* Custom Scrollbar Hide for modal content (retained for existing usage) */
+.custom-scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* --- Admin Nav Button & Dropdown Styles --- */
+
+/* Button Hover Micro-interaction */
+.admin-nav-button:not(.bg-indigo-700):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Focus/Active State (Subtle transition on activation) */
+.admin-nav-button {
+  /* Ensure transition applies to transform and shadow */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dropdown Menu Transition (Pop-in effect) */
+.admin-dropdown-menu {
+  /* Initial state is set in TSX: opacity-0 scale-95 */
+  /* We use a CSS class to override the initial state when the menu is rendered (isOpen is true) */
+  animation: dropdown-open 0.3s ease-out forwards;
+  transform-origin: top right;
+}
+
+@keyframes dropdown-open {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.step-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================================================== */
+/* === CONSOLIDATED VARIABLES (From MindmeshLayout & Dashboard) ============= */
+/* ========================================================================== */
+
+:root {
+  /* === NEW SYSTEM COLORS === */
+  --color-primary: #64B5F6;
+  /* Light Blue for main actions */
+  --color-primary-dark: #1976D2;
+  /* Dark Blue for hover/active states */
+  --color-primary-light: #E3F2FD;
+  /* Pale Blue for backgrounds */
+  --color-text-main: #212121;
+  /* Dark Grey for body text */
+  --color-background: #FFFFFF;
+  /* White for the main canvas */
+
+  /* Base Colors (from MindmeshLayout) */
+  --color-bg-platinum: var(--color-background);
+  /* Light background */
+  --color-text-jet: var(--color-text-main);
+  /* Jet Black/Bold Text */
+  --color-accent-green: #10B981;
+  /* Accent Green (Emerald 500) - Retained for status/sidebar active */
+  --color-text-inactive: #6B7280;
+  /* Modern Gray for inactive text/icons */
+  --color-card-white: var(--color-background);
+  /* Card panels */
+
+  /* Shadows */
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 4px rgba(0, 0, 0, 0.03);
+  --shadow-moderate: 0 10px 25px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.05);
+
+  /* Dashboard Specific Colors (from Dashboard.module.css) */
+  --color-crimson: #D81E27;
+  --color-ash-gray: #AAAAAA;
+  /* Secondary accents */
+  --color-sidebar-dark: #103C10;
+  /* Dark Green background for sidebar (Matching Picture 2) */
+  --color-dashboard-header-dark: var(--color-text-jet);
+  --color-sidebar-inactive-text: #FFFFFF;
+  /* White text for inactive links */
+  --color-sidebar-active-bg: var(--color-primary-dark);
+  /* Use dark primary for active sidebar item */
+  --color-sidebar-hover-bg: var(--color-primary-dark);
+  /* Use dark primary on hover */
+  --color-divider-soft: rgba(255, 255, 255, 0.1);
+  /* Soft divider color */
+
+  /* UI Status Colors */
+  --color-ui-green-active: #27AE60;
+  --color-ui-yellow-pending-bg: #FFEB3B;
+  --color-ui-yellow-pending-text: #333333;
+  --color-ui-red-rejected-bg: #EF5350;
+  --color-ui-blue-synced-bg: var(--color-primary);
+  --color-ui-highlight-row: var(--color-primary-light);
+  --color-ui-verified-bg: #66BB6A;
+
+  /* General UI */
+  --color-bg-light-gray: var(--color-primary-light);
+  /* Overall background */
+  --color-border-light: #EEEEEE;
+  /* Light border color */
+  --color-charcoal-hover: #585858;
+  /* Hover effects */
+
+  /* Aliases */
+  --color-text-primary: var(--color-text-main);
+  --color-bg-primary: var(--color-background);
+  --color-bg-card: var(--color-background);
+  --color-bg-dashboard: var(--color-primary-light);
+}
+
+/* ========================================================================== */
+/* === LAYOUT STYLES (From MindmeshLayout.module.css) ======================= */
+/* ========================================================================== */
+
+.layout-appLayout {
+  display: flex;
+  height: 100vh;
+  background-color: var(--color-bg-platinum);
+  /* Soft background layering */
+  padding: 20px;
+  /* Revert padding */
+  gap: 20px;
+  /* Revert gap */
+  overflow: hidden;
+}
+
+/* --- Sidebar Styles (New Minimalist Design) --- */
+
+/* --- Sidebar Footer Utility Buttons --- */
+.layout-sidebarFooter {
+  padding: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+/* --- Sidebar Styles (Fixed Vertical Panel) --- */
+.layout-sidebarCard {
+  width: 240px;
+  /* Standard expanded width */
+  flex-shrink: 0;
+  background-color: #F8F9FA;
+  /* Use light gray for subtle separation */
+  border-radius: 16px;
+  /* More pronounced rounded corners */
+  box-shadow: var(--shadow-soft);
+  /* Softer shadow for a cleaner look */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: width 0.3s ease-in-out;
+}
+
+.layout-sidebarCollapsed {
+  width: 72px;
+  /* Standard collapsed width */
+}
+
+.layout-sidebarHeader {
+  padding: 20px;
+  /* Consolidated padding for top/bottom/left/right */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Center horizontally */
+  height: auto;
+  flex-shrink: 0;
+  overflow: hidden;
+  /* Important for containing transitions */
+}
+
+.layout-sidebarCollapsed .layout-sidebarHeader {
+  padding: 10px 20px;
+  /* Reduce vertical padding for collapsed state */
+  height: 60px;
+  /* Set a fixed height for the collapsed header */
+}
+
+.layout-brandingContainer {
+  position: relative;
+  display: grid;
+  /* Use grid for robust centering */
+  place-items: center;
+  /* Center both horizontally and vertically */
+  margin: 0 auto;
+  /* Add margin to center the logo */
+  height: 100px;
+  /* Increased height for larger logo */
+  width: 100%;
+  /* Allow full width for branding container */
+  transition: width 0.3s ease-in-out;
+}
+
+.layout-sidebarCollapsed .layout-brandingContainer {
+  height: 60px;
+  /* Adjust height to match compact logo when collapsed */
+}
+
+.layout-fullLogo {
+  height: 80px;
+  /* Increased size */
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  transform-origin: center;
+  /* Revert origin for animation compatibility */
+  margin-top: auto;
+  margin-bottom: auto;
+  /* Remove explicit margin as grid handles centering */
+}
+
+.layout-compactLogo {
+  height: 60px;
+  width: 60px;
+  border-radius: 12px;
+  object-fit: contain;
+  padding: 5px;
+  background-color: var(--color-card-white);
+  box-shadow: var(--shadow-soft);
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: none;
+}
+
+.layout-sidebarNav {
+  flex-grow: 1;
+  min-height: 0;
+  /* Ensure scrollable content works correctly in flex container */
+  padding: 10px 16px;
+  /* Spacing adjustment */
+  overflow-y: auto;
+}
+
+.layout-sidebarNav::-webkit-scrollbar {
+  display: none;
+}
+
+.layout-navSection {
+  margin-bottom: 16px;
+  padding-top: 0;
+  /* Removing border-top for cleaner look */
+}
+
+.layout-navLink {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  /* Subtle pill shape */
+  font-weight: 500;
+  color: var(--color-text-jet);
+  /* Dark text for light sidebar */
+  transition: all 0.2s ease;
+  text-decoration: none;
+  font-size: 15px;
+  /* Readable font size */
+}
+
+.layout-navLink:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  /* Slightly darker hover background */
+  color: var(--color-text-jet);
+  transform: none;
+  text-decoration: none;
+}
+
+.layout-navLinkActive {
+  background-color: var(--color-accent-green);
+  /* Bright Green active background */
+  color: var(--color-card-white);
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+  /* Subtle shadow for active state */
+  transform: translateY(-1px);
+  /* Slight lift */
+}
+
+.layout-navLinkActive .layout-navIcon {
+  color: var(--color-card-white);
+  /* Active icon is white */
+}
+
+.layout-navLinkActive:hover {
+  background-color: var(--color-accent-green);
+  color: var(--color-card-white);
+}
+
+.layout-navIcon {
+  width: 20px;
+  /* Slightly smaller icons */
+  height: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  color: var(--color-text-inactive);
+  /* Dark icon color for light sidebar */
+  transition: color 0.2s ease;
+}
+
+.layout-navLinkActive .layout-navIcon {
+  color: var(--color-card-white);
+}
+
+.layout-navLinkCollapsed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.layout-navLinkCollapsed .layout-navIcon {
+  margin-right: 0;
+}
+
+/* --- Main Content Area (Large White Card) --- */
+.layout-mainContentArea {
+  flex-grow: 1;
+  /* Allow content area to take remaining space */
+  min-width: 0;
+  /* Crucial fix for flexbox overflow/overlap issues */
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-card-white);
+  border-radius: 16px;
+  /* Match sidebar radius */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+  /* Custom softer shadow for main content */
+  overflow: hidden;
+}
+
+.layout-mainContentScroll {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  /* Revert padding */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  /* Revert centering properties */
+  display: block;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* --- Header Styles (Top Bar) --- */
+.layout-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: var(--color-card-white);
+  /* Match main card background */
+  padding: 20px 20px 0 20px;
+  /* Add back horizontal padding for header content */
+  display: flex;
+  justify-content: space-between;
+  /* Distribute items evenly */
+  align-items: center;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+/* User Dropdown */
+.layout-userDropdownButton {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  /* Increased padding */
+  border-radius: 50px;
+  transition: background-color 0.2s ease;
+}
+
+.layout-userDropdownButton:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.layout-userDropdownMenu {
+  border-radius: 12px;
+  box-shadow: var(--shadow-moderate);
+  overflow: hidden;
+  border: none;
+  /* Remove heavy borders */
+}
+
+/* --- Mobile Styles --- */
+@media (max-width: 1024px) {
+  .layout-desktop-sidebar {
+    display: none !important;
+    /* Force hide desktop sidebar on mobile/small screens */
+  }
+
+  .layout-appLayout {
+    padding: 0;
+    gap: 0;
+  }
+
+  .layout-sidebarCard {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 50;
+    width: 280px;
+    border-radius: 0;
+    /* Full height on mobile */
+    transform: translateX(-100%);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .layout-sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .layout-mainContentArea {
+    width: 100%;
+    /* Ensure full width when sidebar is hidden/mobile */
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .layout-header {
+    padding: 15px 20px 0 20px;
+    /* Added horizontal padding for mobile */
+    height: 70px;
+  }
+
+  .layout-mainContentScroll {
+    padding: 16px;
+    /* Add back some padding for mobile content */
+  }
+}
+
+/* Field Officer Mobile Flow (Dark Theme Override) - Keeping existing logic for this specific flow */
+.layout-fieldOfficerDarkTheme {
+  background-color: #1F2937;
+  color: #F9FAFB;
+}
+
+.layout-fieldOfficerDarkTheme .layout-mainContentArea {
+  background-color: #1F2937;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.layout-fieldOfficerDarkTheme .layout-header {
+  background-color: #1F2937;
+}
+
+/* ========================================================================== */
+/* === DASHBOARD STYLES (From Dashboard.module.css) ========================= */
+/* ========================================================================== */
+
+/* Base Layout Styles */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg-dashboard);
+  /* Light gray for overall background */
+}
+
+/* Sidebar Styles (Dashboard styles removed as they are replaced by the new .sidebar component) */
+
+/* Avatar Styles */
+.dashboard-avatar {
+  border-radius: 50%;
+  width: 32px;
+  /* Default size for sm */
+  height: 32px;
+}
+
+.dashboard-avatarGroupAvatar {
+  border-radius: 50%;
+  width: 32px;
+  /* Default size for sm */
+  height: 32px;
+  margin-right: -8px;
+  /* Overlap avatars */
+  border: 2px solid var(--color-sidebar-dark);
+  /* Border color matches sidebar */
+}
+
+.dashboard-headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-avatarGroup {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.dashboard-avatarGroup .dashboard-avatar {
+  margin-right: -8px;
+  /* Overlap avatars */
+  border: 2px solid var(--color-sidebar-dark);
+  border-radius: 50%;
+}
+
+.dashboard-avatarGroup .dashboard-avatarCount {
+  background-color: var(--color-crimson);
+  color: var(--color-card-white);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 10;
+  margin-left: 5px;
+}
+
+.dashboard-profileSection {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.dashboard-profileInfo {
+  text-align: left;
+  margin-right: 10px;
+}
+
+.dashboard-profileName {
+  font-weight: 600;
+  color: var(--color-card-white);
+  /* High contrast white */
+  font-size: 0.9rem;
+}
+
+.dashboard-profileRole {
+  font-size: 0.75rem;
+  color: var(--color-ash-gray);
+  /* Muted gray for role */
+}
+
+.dashboard-notificationIcon {
+  cursor: pointer;
+  color: var(--color-card-white);
+  /* White for notification icon */
+  transition: color 0.2s;
+  margin-right: 15px;
+}
+
+.dashboard-notificationIcon:hover {
+  color: var(--color-card-white);
+  /* Brighter on hover */
+}
+
+.dashboard-sidebarFooter {
+  padding: 15px;
+  /* Smaller padding */
+  border-top: 1px solid var(--color-divider-soft);
+  /* Soft divider */
+}
+
+.dashboard-syncStatus {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dashboard-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 10px;
+  /* Pill-shaped */
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: fit-content;
+  text-transform: uppercase;
+}
+
+.dashboard-badgeSynced {
+  background-color: var(--color-ui-blue-synced-bg);
+  color: var(--color-card-white);
+}
+
+.dashboard-badgePending {
+  background-color: var(--color-ui-yellow-pending-bg);
+  color: var(--color-ui-yellow-pending-text);
+}
+
+.dashboard-badgeNotSynced {
+  background-color: var(--color-ui-red-rejected-bg);
+  color: var(--color-card-white);
+}
+
+.dashboard-syncTime {
+  font-size: 0.75rem;
+  color: var(--color-ash-gray);
+  /* Muted gray */
+}
+
+.dashboard-userProfile {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.dashboard-userProfile .dashboard-profileInfo {
+  margin-left: 10px;
+}
+
+.dashboard-userProfile .dashboard-profileName {
+  font-weight: 600;
+  color: var(--color-card-white);
+  /* High contrast white */
+  font-size: 0.9rem;
+}
+
+.dashboard-userProfile .dashboard-profileRole {
+  font-size: 0.75rem;
+  color: var(--color-ash-gray);
+  /* Muted gray */
+}
+
+/* Main Content Styles */
+.dashboard-mainContent {
+  flex-grow: 1;
+  padding: 0;
+  overflow-y: auto;
+  background-color: var(--color-bg-dashboard);
+}
+
+.dashboard-contentCard {
+  background-color: var(--color-bg-card);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  margin: 20px;
+  min-height: calc(100vh - 40px - 60px);
+}
+
+/* Top Bar Styles (Dark strip above content card) */
+.dashboard-topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-dashboard-header-dark);
+  /* Darker background for header */
+  color: var(--color-card-white);
+  /* White text */
+  padding: 15px 20px;
+  margin-bottom: 0;
+  height: 60px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.dashboard-sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.dashboard-tabsContainer {
+  display: flex;
+  /* Removed border-bottom */
+  margin-bottom: 20px;
+}
+
+.dashboard-tab {
+  padding: 10px 0;
+  /* Removed horizontal padding */
+  margin-right: 30px;
+  /* Spacing between tabs */
+  cursor: pointer;
+  color: var(--color-ash-gray);
+  font-weight: 500;
+  transition: color 0.2s;
+  position: relative;
+  font-size: 1rem;
+}
+
+.dashboard-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.dashboard-tabActive {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.dashboard-tabActive::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  /* Adjust to sit below the text */
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-sidebar-active-bg);
+  /* Use Dark Green for active underline */
+  border-radius: 2px;
+}
+
+.dashboard-searchContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.dashboard-searchIcon {
+  position: absolute;
+  left: 15px;
+  color: var(--color-ash-gray);
+}
+
+.dashboard-searchInput {
+  padding: 10px 15px 10px 40px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 9999px;
+  box-shadow: none;
+  width: 300px;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  outline: none;
+}
+
+.dashboard-searchInput::placeholder {
+  color: var(--color-ash-gray);
+}
+
+/* Table Styles */
+.dashboard-tableContainer {
+  overflow-x: auto;
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  /* Rounded corners for the table container */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-onboardingTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-bg-primary);
+}
+
+.dashboard-tableHeader th {
+  text-align: left;
+  padding: 15px 20px;
+  /* Increased padding */
+  font-size: 0.8rem;
+  color: var(--color-ash-gray);
+  border-bottom: 1px solid var(--color-border-light);
+  text-transform: uppercase;
+  font-weight: 600;
+  /* Slightly bolder header text */
+  background-color: var(--color-bg-light-gray);
+  /* Subtle background for header */
+}
+
+.dashboard-tableRow {
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background-color 0.2s;
+}
+
+.dashboard-tableRow:last-child {
+  border-bottom: none;
+}
+
+.dashboard-tableRow:hover {
+  background-color: var(--color-bg-light-gray);
+}
+
+.dashboard-tableCell {
+  padding: 18px 20px;
+  /* Increased vertical padding for readability */
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.dashboard-employeeCell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dashboard-employeeCell>div:first-child {
+  font-weight: 600;
+}
+
+.dashboard-rowHighlighted .dashboard-employeeCell {
+  padding-left: 40px;
+  /* Increased padding for icon */
+}
+
+.dashboard-statusChip {
+  display: inline-flex;
+  padding: 6px 12px;
+  /* Larger padding */
+  border-radius: 9999px;
+  /* Fully pill-shaped */
+  font-size: 0.75rem;
+  /* Slightly smaller font for chips */
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-transform: uppercase;
+}
+
+.dashboard-statusPending {
+  background-color: #FFF3E0;
+  /* Light yellow/orange background */
+  color: #FF9800;
+  /* Darker orange text */
+  border: none;
+}
+
+.dashboard-statusVerified {
+  /* Paid status: Light green background, darker green text (Matching image 2) */
+  background-color: #E6F7EE;
+  /* Very light green */
+  color: #10B981;
+  /* Emerald 500 */
+  border: none;
+}
+
+.dashboard-statusSynced {
+  /* Generated status: Light blue background, darker blue text (Matching image 2) */
+  background-color: #E6F0FF;
+  /* Very light blue */
+  color: #4285F4;
+  /* Google Blue */
+  border: none;
+}
+
+.dashboard-statusRejected {
+  background-color: #FFEBEE;
+  /* Light red background */
+  color: #F44336;
+  /* Darker red text */
+  border: none;
+}
+
+/* Portal Sync Status Chip (Not Synced) */
+.dashboard-statusNotSynced {
+  background-color: #FBEFF2;
+  /* Light rose background */
+  color: #E91E63;
+  /* Rose text */
+  border: none;
+}
+
+/* New style for Not Generated Invoice status (Matching image 2 - light gray/default) */
+.dashboard-statusNotGeneratedInvoice {
+  background-color: #F3F4F6;
+  /* Gray 100 */
+  color: #6B7280;
+  /* Gray 500 */
+  border: none;
+}
+
+.dashboard-actionCell {
+  display: flex;
+  gap: 5px;
+}
+
+.dashboard-actionCell button {
+  background: var(--color-bg-light-gray);
+  /* Light gray background for buttons */
+  border: 1px solid var(--color-border-light);
+  cursor: pointer;
+  padding: 8px;
+  /* Larger clickable area */
+  border-radius: 6px;
+  transition: background-color 0.2s, transform 0.1s, border-color 0.2s;
+  line-height: 1;
+  /* Ensure icons are centered */
+}
+
+.dashboard-actionCell button:hover {
+  background-color: var(--color-bg-platinum);
+  border-color: var(--color-ash-gray);
+}
+
+.dashboard-actionCell button:active {
+  transform: scale(0.98);
+}
+
+.dashboard-iconView {
+  color: #607D8B;
+  /* Blue-gray for view icon */
+}
+
+.dashboard-iconDetails {
+  color: #607D8B;
+}
+
+.dashboard-iconVerify {
+  color: #4CAF50;
+  /* Green for verify icon */
+}
+
+.dashboard-iconReject {
+  color: #F44336;
+  /* Red for reject icon */
+}
+
+/* Row Highlighting */
+.dashboard-rowHighlighted {
+  background-color: #FFFDE7;
+  /* Very light yellow tint for highlighting */
+  position: relative;
+}
+
+.dashboard-highlightIcon {
+  color: #FFC107;
+  /* Amber color for the alert icon */
+  position: absolute;
+  left: 15px;
+  /* Adjusted position */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .dashboard-sidebar {
+    width: 100%;
+    height: auto;
+    padding: 10px 0;
+  }
+
+  .dashboard-navItem {
+    padding: 10px 20px;
+  }
+
+  .dashboard-navItemActive {
+    padding-left: 16px;
+  }
+
+  .dashboard-mainContent {
+    padding: 10px;
+  }
+
+  .dashboard-contentCard {
+    padding: 15px;
+  }
+
+  .dashboard-sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-tabsContainer {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-tab {
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .dashboard-searchContainer {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .dashboard-searchInput {
+    width: 100%;
+  }
+
+  .dashboard-tableCell {
+    padding: 10px 5px;
+  }
+}
+
+/* ========================================================================== */
+/* === CUSTOM STYLES MOVED FROM index.css =================================== */
+/* ========================================================================== */
+
+.new-enrollment-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #F8F9FA;
+}
+
+.new-enrollment-container {
+  background-color: var(--color-background);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.edit-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--color-primary);
+}
+
+.new-enrollment-container h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--color-text-main);
+}
+
+.new-enrollment-container p {
+  font-size: 16px;
+  color: var(--color-text-inactive);
+  margin-bottom: 20px;
+}
+
+.start-application-button {
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.start-application-button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+
+/* Styles for MultiStepIndicator circles and lines */
+.step-circle {
+  width: 40px;
+  /* Increased size */
+  height: 40px;
+  /* Increased size */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+  /* Make icons bolder */
+}
+
+.step-circle.completed {
+  background-color: #0EA5E9;
+  /* Sky Blue */
+  border-color: #0EA5E9;
+  /* Sky Blue */
+  color: white;
+}
+
+.step-circle.current {
+  background-color: white;
+  border-color: #0EA5E9;
+  /* Sky Blue */
+  color: #0EA5E9;
+  /* Sky Blue */
+}
+
+.step-circle.upcoming {
+  background-color: var(--color-background);
+  border-color: var(--color-border-light);
+  color: var(--color-text-inactive);
+}
+
+.step-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.step-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(100% + 8px);
+  /* Adjusted position for line */
+  top: 50%;
+  width: 32px;
+  /* Adjusted length of the line */
+  height: 2px;
+  /* Increased thickness of the line */
+  background-color: var(--color-border-light);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.step-item:not(:last-child).text-accent::after {
+  background-color: #0EA5E9;
+  /* Sky Blue for completed lines */
+}
+
+/* Authentication Page Styles */
+.authPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #222222;
+  /* Dark background */
+  position: relative;
+}
+
+.authLayout {
+  display: flex;
+  width: 800px;
+  height: 450px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.authLayout>div:first-child {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding: 20px;
+}
+
+.authLayout>div:last-child {
+  flex: 1;
+  background-color: #333;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.formContainer input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.formContainer button {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4285f4;
+  color: white;
+  cursor: pointer;
+}
+
+.formContainer button:hover {
+  background-color: #1a73e8;
+}
+
+.formContainer .separator {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.formContainer .separator:before,
+.formContainer .separator:after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.formContainer .separator:not(:empty)::before {
+  margin-right: .25em;
+}
+
+.formContainer .separator:not(:empty)::after {
+  margin-left: .25em;
+}
+
+.formContainer .googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.formContainer .googleButton img {
+  width: 20px;
+  margin-right: 10px;
+}
+
+.copyright {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  font-size: 12px;
+}
+
+.welcomeText {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.tagline {
+  font-size: 16px;
+  color: #ddd;
+  margin-bottom: 20px;
+}
+
+.authLayout>div:first-child {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.authLayout>div:first-child>img {
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.copyright {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  font-size: 12px;
+}
