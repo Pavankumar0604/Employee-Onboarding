@@ -1,29 +1,29 @@
-import React, { useEffect } from 'react';
-import { useForm, Controller, SubmitHandler, Resolver } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import type { Insurance, InsuranceType } from '../../types/mindmesh';
+import type { Insurance } from '../../types/mindmesh';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
 import Button from '../ui/Button';
 import DatePicker from '../ui/DatePicker';
 
 const schema = yup.object({
-    type: yup.string<InsuranceType>().oneOf(['GMC', 'GPA', 'WCA', 'Other']).required('Type is required'),
+    type: yup.string().oneOf(['GMC', 'GPA', 'WCA', 'Other']).required('Type is required'),
     provider: yup.string().required('Provider is required'),
     policyNumber: yup.string().required('Policy number is required'),
     validTill: yup.string().required('Valid till date is required'),
 }).defined();
 
 interface InsuranceFormProps {
-  onSave: (data: Omit<Insurance, 'id'>) => void;
-  onClose: () => void;
-  initialData?: Insurance | null;
+    onSave: (data: Omit<Insurance, 'id'>) => void;
+    onClose: () => void;
+    initialData?: Insurance | null;
 }
 
 const InsuranceForm: React.FC<InsuranceFormProps> = ({ onSave, onClose, initialData }) => {
     const { register, handleSubmit, control, formState: { errors }, reset } = useForm<Omit<Insurance, 'id'>>({
-        resolver: yupResolver(schema) as Resolver<Omit<Insurance, 'id'>>,
+        resolver: yupResolver(schema) as any,
     });
 
     useEffect(() => {

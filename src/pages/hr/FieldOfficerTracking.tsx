@@ -26,7 +26,7 @@ const FieldOfficerTracking: React.FC = () => {
     const [events, setEvents] = useState<AttendanceEvent[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    
+
     const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
     const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
     const [selectedOfficer, setSelectedOfficer] = useState('all');
@@ -39,17 +39,23 @@ const FieldOfficerTracking: React.FC = () => {
                 api.getAllUsersWithRoles()
             ]);
             setEvents((eventsData || []) as AttendanceEvent[]);
+
             setUsers(
-              (usersData || [])
-                .filter(user => user?.roles?.name === 'field_officer')
-                .map(user => ({
-                  ...user,
-                  name: user.full_name || '',
-                  role: (user?.roles?.name || 'field_officer') as UserRole,
-                  organizationName: null,
-                  organizationId: user.organizationId ?? null,
-                  photo_url: user.photo_url ?? null, // Ensure photo_url is always present
-                }))
+                (usersData || [])
+                    .filter((user: any) => user?.roles?.display_name === 'Field Officer')
+                    .map((user: any) => ({
+                        id: user.id,
+                        email: user.email ?? null,
+                        full_name: user.name ?? null,
+                        name: user.name || '',
+                        role: 'field_officer' as UserRole,
+                        organizationId: user.organizationId ?? null,
+                        organizationName: null,
+                        is_active: true,
+                        created_at: user.created_at ?? '',
+                        phone_number: user.phone ?? null,
+                        photo_url: user.photo_url ?? null,
+                    }))
             );
         } catch (error) {
             console.error("Failed to fetch tracking data", error);
@@ -67,10 +73,14 @@ const FieldOfficerTracking: React.FC = () => {
         if (selectedOfficer !== 'all') {
             results = results.filter(e => e.user_id === selectedOfficer);
         }
-        const userMap = new Map(users.map(u => [u.id, u.full_name]));
+        const userMap = new Map(users.map(u => [u.id, u.full_name || u.name]));
         return results
             .map(event => ({ ...event, userName: userMap.get(event.user_id) || 'Unknown Officer' }))
-            .sort((a: AttendanceEvent, b: AttendanceEvent) => new Date(a.check_in_time).getTime() - new Date(b.check_in_time).getTime());
+            .sort((a: AttendanceEvent, b: AttendanceEvent) => {
+                const aTime = a.check_in_time ? new Date(a.check_in_time).getTime() : 0;
+                const bTime = b.check_in_time ? new Date(b.check_in_time).getTime() : 0;
+                return aTime - bTime;
+            });
     }, [events, users, selectedOfficer]);
 
     return (
@@ -97,26 +107,25 @@ const FieldOfficerTracking: React.FC = () => {
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted uppercase">Location</th>
                         </tr>
                     </thead>
-                     <tbody className="bg-card divide-y divide-border">
+                    <tbody className="bg-card divide-y divide-border">
                         {isLoading ? (
-                            <tr><td colSpan={4} className="text-center py-10 text-muted"><Loader2 className="h-6 w-6 animate-spin mx-auto"/></td></tr>
+                            <tr><td colSpan={4} className="text-center py-10 text-muted"><Loader2 className="h-6 w-6 animate-spin mx-auto" /></td></tr>
                         ) : filteredEvents.length === 0 ? (
-                             <tr><td colSpan={4} className="text-center py-10 text-muted">No events found for the selected criteria.</td></tr>
+                            <tr><td colSpan={4} className="text-center py-10 text-muted">No tracking records found.</td></tr>
                         ) : (
-                            filteredEvents.map((event) => (
-                                <tr key={event.id}>
-                                   <td className="px-6 py-4 whitespace-nowrap font-medium">{event.userName}</td>
-                                   <td className="px-6 py-4 whitespace-nowrap capitalize">{event.status?.replace('-', ' ')}</td>
-                                   <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">{format(new Date(event.check_in_time), 'dd MMM, yyyy - hh:mm a')}</td>
-                                   <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
-                                       {/* {event.latitude && event.longitude ? (
-                                           <a href={`https://www.google.com/maps/search/?api=1&query=${event.latitude},${event.longitude}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-accent hover:underline">
-                                               <MapPin className="h-4 w-4 mr-1"/> View on Map
-                                           </a>
-                                       ) : ('Not available')} */}
-                                       Location data not available
-                                   </td>
-                               </tr>
+                            filteredEvents.map((event, idx) => (
+                                <tr key={`${event.id}-${idx}`} className="hover:bg-page/50 transition-colors">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">{event.userName}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
+                                        {event.check_out_time ? 'Check Out' : 'Check In'}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted">
+                                        {event.check_in_time ? format(new Date(event.check_in_time), 'PPp') : 'N/A'}
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-muted max-w-xs truncate">
+                                        Location data not available
+                                    </td>
+                                </tr>
                             ))
                         )}
                     </tbody>
@@ -126,5 +135,4 @@ const FieldOfficerTracking: React.FC = () => {
     );
 };
 
-// FIX: Added default export for the FieldOfficerTracking component.
 export default FieldOfficerTracking;

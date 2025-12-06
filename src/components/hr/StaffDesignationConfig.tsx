@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { api } from '../../services/api';
 import type { SiteStaffDesignation } from '../../types/mindmesh';
@@ -13,13 +13,13 @@ const toCSV = (data: SiteStaffDesignation[]): string => {
     const header = CSV_HEADERS.join(',');
     const rows = data.map(row =>
         [row.department, row.designation, row.permanentId, row.temporaryId, row.monthlySalary]
-        .map(val => {
-            const strVal = String(val ?? '');
-            if (strVal.includes(',') || strVal.includes('"') || strVal.includes('\n')) {
-                return `"${strVal.replace(/"/g, '""')}"`;
-            }
-            return strVal;
-        }).join(',')
+            .map(val => {
+                const strVal = String(val ?? '');
+                if (strVal.includes(',') || strVal.includes('"') || strVal.includes('\n')) {
+                    return `"${strVal.replace(/"/g, '""')}"`;
+                }
+                return strVal;
+            }).join(',')
     );
     return [header, ...rows].join('\n');
 };
@@ -27,7 +27,7 @@ const toCSV = (data: SiteStaffDesignation[]): string => {
 const fromCSV = (csvText: string): Partial<SiteStaffDesignation>[] => {
     const lines = csvText.trim().replace(/\r/g, '').split('\n');
     if (lines.length < 2) return [];
-    
+
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     if (!CSV_HEADERS.every(h => headers.includes(h))) {
         throw new Error(`CSV is missing required headers: ${CSV_HEADERS.join(', ')}`);
@@ -37,7 +37,7 @@ const fromCSV = (csvText: string): Partial<SiteStaffDesignation>[] => {
     for (let i = 1; i < lines.length; i++) {
         const row: Record<string, string> = {};
         const values = lines[i].match(/(?<=,|^)(?:"(?:[^"]|"")*"|[^,]*)/g) || [];
-        
+
         headers.forEach((header, index) => {
             let value = (values[index] || '').trim();
             if (value.startsWith('"') && value.endsWith('"')) {
@@ -45,7 +45,7 @@ const fromCSV = (csvText: string): Partial<SiteStaffDesignation>[] => {
             }
             row[header] = value;
         });
-        
+
         const salary = parseFloat(row.MonthlySalary);
         rows.push({
             department: row.Department,
@@ -99,13 +99,13 @@ const StaffDesignationConfig: React.FC = () => {
 
     const handleSave = async (data: { designations: SiteStaffDesignation[] }) => {
         try {
-            await api.updateSiteStaffDesignations(data.designations);
+            await (api.updateSiteStaffDesignations as any)(data.designations);
             setToast({ message: 'Configuration saved successfully.', type: 'success' });
         } catch (error) {
             setToast({ message: 'Failed to save configuration.', type: 'error' });
         }
     };
-    
+
     const handleExport = () => {
         if (!Array.isArray(watchedFields) || watchedFields.length === 0) {
             setToast({ message: 'No data to export.', type: 'error' });
@@ -184,16 +184,16 @@ const StaffDesignationConfig: React.FC = () => {
                     Object.entries(groupedDesignations).map(([department, items]) => (
                         <div key={department} className="border border-border rounded-xl">
                             <div className="p-4 bg-page rounded-t-xl">
-                                <Input 
-                                    aria-label={`Department for ${department}`} 
-                                    id={`designations.${items[0].originalIndex}.department`} 
-                                    {...register(`designations.${items[0].originalIndex}.department`)} 
-                                    className="font-semibold text-lg !border-0 !p-0 !bg-transparent focus:!ring-0" 
+                                <Input
+                                    aria-label={`Department for ${department}`}
+                                    id={`designations.${items[0].originalIndex}.department`}
+                                    {...register(`designations.${items[0].originalIndex}.department`)}
+                                    className="font-semibold text-lg !border-0 !p-0 !bg-transparent focus:!ring-0"
                                 />
                             </div>
                             <div className="space-y-3 p-4">
                                 {Array.isArray(items) && items.map(item => (
-                                     <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
+                                    <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
                                         <div className="md:col-span-3">
                                             <Input placeholder="Designation" aria-label={`Designation for ${department}`} id={`designations.${item.originalIndex}.designation`} {...register(`designations.${item.originalIndex}.designation`)} />
                                         </div>
@@ -218,7 +218,7 @@ const StaffDesignationConfig: React.FC = () => {
                     ))
                 )}
             </div>
-            
+
             <Button type="button" onClick={handleAddRow} variant="outline" className="mt-4"><Plus className="mr-2 h-4 w-4" /> Add Designation</Button>
         </form>
     );

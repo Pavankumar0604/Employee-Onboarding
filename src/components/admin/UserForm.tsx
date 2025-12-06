@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -35,7 +35,7 @@ const validationSchema = yup.object({
 const UserForm: React.FC<UserFormProps> = ({ isOpen, onClose, onSave, initialData, isSaving }) => {
   const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<User>({
     // FIX: Provide explicit generic type to yupResolver to fix type inference issues.
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema) as any,
   });
 
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -52,12 +52,12 @@ const UserForm: React.FC<UserFormProps> = ({ isOpen, onClose, onSave, initialDat
       }
     }
   }, [initialData, reset, isOpen]);
-  
+
   const handleOrgChange = (selectedOption: { value: string; label: string } | null) => {
-      const orgId = selectedOption ? selectedOption.value : '';
-      const org = organizations.find(o => o.id === orgId);
-      setValue('organizationId', orgId);
-      setValue('organizationName', org?.shortName || '');
+    const orgId = selectedOption ? selectedOption.value : '';
+    const org = organizations.find(o => o.id === orgId);
+    setValue('organizationId', orgId);
+    setValue('organizationName', org?.shortName || '');
   };
 
   const onSubmit: SubmitHandler<User> = (data) => {

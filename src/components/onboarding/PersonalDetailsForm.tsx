@@ -40,7 +40,7 @@ const PersonalDetailsForm: React.FC<PersonalDetailsFormProps> = ({ onValidated }
   const { personal, updatePersonal, addOrUpdateEmergencyContactAsFamilyMember } = useOnboardingStore();
 
   const { register, handleSubmit, formState: { errors }, control } = useForm<PersonalDetails>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema) as any,
     defaultValues: personal,
   });
 

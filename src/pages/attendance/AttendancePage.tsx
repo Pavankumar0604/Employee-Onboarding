@@ -1,9 +1,8 @@
-import React, { useState, FC, useEffect } from 'react';
+import { useState, FC, useEffect } from 'react';
 import { useSettingsStore } from '../../store/settingsStore';
 import type { Holiday } from '../../types/attendance';
 import { format } from 'date-fns';
-import { api } from '../../services/api'; // Import API service
-import { HolidayRow } from '../../services/api'; // Import HolidayRow type
+import { api } from '../../services/api';
 import { Settings, Clock, Bell, Calendar, Plus, Trash2, Users } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import DatePicker from '../../components/ui/DatePicker';
@@ -17,7 +16,7 @@ const AttendancePage: FC = () => {
     const { attendance: attendanceSettings } = useSettingsStore(); // Removed local 'holidays' from store destructuring
     const [isSaving, setIsSaving] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-    
+
     // State for holiday list management, now fetched directly
     const [holidayList, setHolidayList] = useState<Holiday[]>([]);
     const [isLoadingHolidays, setIsLoadingHolidays] = useState(true);
@@ -26,11 +25,11 @@ const AttendancePage: FC = () => {
     const [rules, setRules] = useState({
         minHoursFullDay: attendanceSettings.minimumHoursFullDay || 8,
         minHoursHalfDay: attendanceSettings.minimumHoursHalfDay || 4,
-        annualEarnedLeaves: 5, 
-        annualSickLeaves: 12, 
-        monthlyFloatingHolidays: 1, 
-        sickLeaveCertAfterDays: 2, 
-        enableCheckInOutNotifications: false, 
+        annualEarnedLeaves: 5,
+        annualSickLeaves: 12,
+        monthlyFloatingHolidays: 1,
+        sickLeaveCertAfterDays: 2,
+        enableCheckInOutNotifications: false,
     });
 
     const [newHolidayName, setNewHolidayName] = useState('');
@@ -94,7 +93,7 @@ const AttendancePage: FC = () => {
         try {
             // Ensure date is in yyyy-MM-dd format for consistency
             const formattedDate = format(new Date(newHolidayDate), 'yyyy-MM-dd');
-            
+
             const newHolidayData = {
                 name: newHolidayName,
                 date: formattedDate,
@@ -138,12 +137,12 @@ const AttendancePage: FC = () => {
     return (
         <div className="p-6 md:p-10 bg-gray-50 min-h-screen">
             <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg">
-                
+
                 {/* Header */}
                 <div className="mb-8 pb-6 border-b border-gray-200">
-                    <SectionHeader 
-                        title="Attendance & Leave Rules" 
-                        description="Set company-wide rules for attendance and leave calculation." 
+                    <SectionHeader
+                        title="Attendance & Leave Rules"
+                        description="Set company-wide rules for attendance and leave calculation."
                         icon={Settings}
                     />
                 </div>
@@ -227,7 +226,7 @@ const AttendancePage: FC = () => {
                 {/* Holiday List Section */}
                 <div className="mb-8">
                     <SectionHeader title="Holiday List" icon={Calendar} />
-                    
+
                     {/* Add New Holiday Form */}
                     <div className="flex space-x-4 mb-6 items-end">
                         <div className="flex-1">

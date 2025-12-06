@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { UploadedFile, AvatarUploadProps } from '../../types/onboarding';
 import { Trash2, Loader2, Camera, Upload } from 'lucide-react';
 import ProfilePlaceholder from '../ui/ProfilePlaceholder';
@@ -14,7 +14,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({ file, onFileChange }
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false); // Use isUploading state
-  const [inputKey, setInputKey] = useState(0); // Key for forcing input remount
+
   const [uploadError, setUploadError] = useState('');
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
@@ -42,11 +42,11 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({ file, onFileChange }
       try {
         // 2. Use authStore action for upload and profile update
         const { success, message } = await uploadProfilePhoto(selectedFile);
-        
+
         if (!success) {
           throw new Error(message);
         }
-        
+
         showToast(message, { type: 'success' });
 
       } catch (error: any) {
@@ -80,7 +80,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({ file, onFileChange }
       URL.revokeObjectURL(file.preview);
       setUploadError('');
       setIsUploading(true);
-      
+
       try {
         const { success, message } = await removeProfilePhoto();
         if (!success) {
@@ -122,7 +122,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({ file, onFileChange }
         )}
       </div>
       <input
-        key={inputKey} // Force remount on key change
+
         ref={fileInputRef}
         type="file"
         accept="image/*"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -30,9 +30,9 @@ const validationSchema = yup.object({
   }),
   escalationEmail: yup.string().email('Must be a valid email address').optional(),
   escalationEmailDurationDays: yup.number().when('escalationEmail', {
-      is: (val: string | undefined) => !!val,
-      then: (schema: yup.NumberSchema) => schema.required('Duration is required').min(0).typeError('Must be a number'), // Explicit type
-      otherwise: (schema: yup.NumberSchema) => schema.optional().nullable(), // Explicit type
+    is: (val: string | undefined) => !!val,
+    then: (schema: yup.NumberSchema) => schema.required('Duration is required').min(0).typeError('Must be a number'), // Explicit type
+    otherwise: (schema: yup.NumberSchema) => schema.optional().nullable(), // Explicit type
   }),
 }).defined();
 
@@ -49,11 +49,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ isOpen, onClose, initialData, setTo
   const { createTask, updateTask } = useTaskStore();
   const [isSaving, setIsSaving] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
-  
+
   const { register, handleSubmit, formState: { errors }, reset, control, watch } = useForm<TaskFormInputs>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema) as any,
   });
-  
+
   const isEditing = !!initialData;
   const watchEscalationL1User = watch("escalationLevel1UserId");
   const watchEscalationL2User = watch("escalationLevel2UserId");
@@ -61,32 +61,32 @@ const TaskForm: React.FC<TaskFormProps> = ({ isOpen, onClose, initialData, setTo
 
   useEffect(() => {
     if (isOpen) {
-        api.getAllUsersWithRoles().then((users: any) => {
-          if (users) {
-            const mindmeshUsers: User[] = users.map((user: any) => ({
-              id: user.id,
-              email: user.email || '',
-              full_name: user.full_name,
-              name: user.full_name || user.email || 'Unknown User',
-              role: user.roles?.[0]?.name || 'field_officer',
-              organizationId: null,
-              organizationName: null,
-              is_active: user.is_active,
-              created_at: user.created_at,
-              phone_number: null,
-              photo_url: null,
-            }));
-            setUsers(mindmeshUsers);
-          }
-        }).catch((error: Error) => {
-            console.error("Failed to fetch users:", error);
-            setUsers([]);
-        });
-        if (initialData) {
-          reset(initialData);
-        } else {
-          reset({ name: '', description: '', dueDate: null, priority: 'Medium', assignedToId: '', escalationLevel1UserId: '', escalationLevel2UserId: '', escalationEmail: '' }); // Added escalation fields
+      api.getAllUsersWithRoles().then((users: any) => {
+        if (users) {
+          const mindmeshUsers: User[] = users.map((user: any) => ({
+            id: user.id,
+            email: user.email || '',
+            full_name: user.full_name,
+            name: user.full_name || user.email || 'Unknown User',
+            role: user.roles?.[0]?.name || 'field_officer',
+            organizationId: null,
+            organizationName: null,
+            is_active: user.is_active,
+            created_at: user.created_at,
+            phone_number: null,
+            photo_url: null,
+          }));
+          setUsers(mindmeshUsers);
         }
+      }).catch((error: Error) => {
+        console.error("Failed to fetch users:", error);
+        setUsers([]);
+      });
+      if (initialData) {
+        reset(initialData);
+      } else {
+        reset({ name: '', description: '', dueDate: null, priority: 'Medium', assignedToId: '', escalationLevel1UserId: '', escalationLevel2UserId: '', escalationEmail: '' }); // Added escalation fields
+      }
     }
   }, [initialData, reset, isOpen]);
 
@@ -95,7 +95,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ isOpen, onClose, initialData, setTo
       setIsSaving(true);
       const assignedUser = users.find(u => u.id === formData.assignedToId);
       const taskData = { ...formData, assignedToName: assignedUser?.name };
-      
+
       if (isEditing) {
         await updateTask(initialData!.id, taskData);
         setToast({ message: 'Task updated successfully!', type: 'success' });
@@ -108,7 +108,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ isOpen, onClose, initialData, setTo
     } catch (error: any) { // FIX 5: Type error parameter
       setToast({ message: 'Failed to save task.', type: 'error' });
     } finally {
-        setIsSaving(false);
+      setIsSaving(false);
     }
   };
 
@@ -139,43 +139,43 @@ const TaskForm: React.FC<TaskFormProps> = ({ isOpen, onClose, initialData, setTo
                 )}
               />
               <Select id="priority" {...register('priority')} error={errors.priority?.message}>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
-                  <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+                <option value="High">High</option>
               </Select>
             </div>
-             <Select id="assignedToId" {...register('assignedToId')} error={errors.assignedToId?.message}>
-                <option value="">Select User</option>
-                {users.map(user => (
-                    <option key={user.id} value={user.id}>{user.name} ({user.role.replace(/_/g, ' ')})</option>
-                ))}
+            <Select id="assignedToId" {...register('assignedToId')} error={errors.assignedToId?.message}>
+              <option value="">Select User</option>
+              {users.map(user => (
+                <option key={user.id} value={user.id}>{user.name} ({user.role.replace(/_/g, ' ')})</option>
+              ))}
             </Select>
 
             <div className="pt-4 border-t">
-                 <h4 className="text-md font-semibold text-gray-800 mb-2">Escalation Matrix (Optional)</h4>
-                 <p className="text-sm text-gray-500 mb-4">Define who gets notified if this task becomes overdue and set the time gaps for each escalation.</p>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                     <Select id="escalationLevel1UserId" {...register('escalationLevel1UserId')} error={errors.escalationLevel1UserId?.message}>
-                        <option value="">Select User</option>
-                        {users.filter(u => u.role.includes('manager') || u.role === 'admin').map(user => (<option key={user.id} value={user.id}>{user.name}</option>))}
-                    </Select>
-                     {watchEscalationL1User && (
-                         <Input placeholder="Days until L1 Escalation" id="escalationLevel1DurationDays" type="number" {...register('escalationLevel1DurationDays')} error={errors.escalationLevel1DurationDays?.message} />
-                     )}
-                     <Select id="escalationLevel2UserId" {...register('escalationLevel2UserId')} error={errors.escalationLevel2UserId?.message}>
-                        <option value="">Select User</option>
-                        {users.filter(u => u.role.includes('manager') || u.role === 'admin').map(user => (<option key={user.id} value={user.id}>{user.name}</option>))}
-                    </Select>
-                     {watchEscalationL2User && (
-                         <Input placeholder="Days until L2 Escalation" id="escalationLevel2DurationDays" type="number" {...register('escalationLevel2DurationDays')} error={errors.escalationLevel2DurationDays?.message} />
-                     )}
-                 </div>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    <Input placeholder="Final Escalation Email" id="escalationEmail" type="email" {...register('escalationEmail')} error={errors.escalationEmail?.message} />
-                    {watchEscalationEmail && (
-                        <Input placeholder="Days until Final Escalation" id="escalationEmailDurationDays" type="number" {...register('escalationEmailDurationDays')} error={errors.escalationEmailDurationDays?.message} />
-                    )}
-                 </div>
+              <h4 className="text-md font-semibold text-gray-800 mb-2">Escalation Matrix (Optional)</h4>
+              <p className="text-sm text-gray-500 mb-4">Define who gets notified if this task becomes overdue and set the time gaps for each escalation.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Select id="escalationLevel1UserId" {...register('escalationLevel1UserId')} error={errors.escalationLevel1UserId?.message}>
+                  <option value="">Select User</option>
+                  {users.filter(u => u.role.includes('manager') || u.role === 'admin').map(user => (<option key={user.id} value={user.id}>{user.name}</option>))}
+                </Select>
+                {watchEscalationL1User && (
+                  <Input placeholder="Days until L1 Escalation" id="escalationLevel1DurationDays" type="number" {...register('escalationLevel1DurationDays')} error={errors.escalationLevel1DurationDays?.message} />
+                )}
+                <Select id="escalationLevel2UserId" {...register('escalationLevel2UserId')} error={errors.escalationLevel2UserId?.message}>
+                  <option value="">Select User</option>
+                  {users.filter(u => u.role.includes('manager') || u.role === 'admin').map(user => (<option key={user.id} value={user.id}>{user.name}</option>))}
+                </Select>
+                {watchEscalationL2User && (
+                  <Input placeholder="Days until L2 Escalation" id="escalationLevel2DurationDays" type="number" {...register('escalationLevel2DurationDays')} error={errors.escalationLevel2DurationDays?.message} />
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                <Input placeholder="Final Escalation Email" id="escalationEmail" type="email" {...register('escalationEmail')} error={errors.escalationEmail?.message} />
+                {watchEscalationEmail && (
+                  <Input placeholder="Days until Final Escalation" id="escalationEmailDurationDays" type="number" {...register('escalationEmailDurationDays')} error={errors.escalationEmailDurationDays?.message} />
+                )}
+              </div>
             </div>
           </div>
           <div className="mt-6 flex justify-end space-x-3">

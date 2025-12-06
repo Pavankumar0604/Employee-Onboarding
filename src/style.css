@@ -126,9 +126,16 @@ h6 {
 /* --- Admin Nav Button & Dropdown Styles --- */
 
 /* Button Hover Micro-interaction */
-.admin-nav-button:not(.bg-indigo-700):hover {
+.admin-nav-button:not(.bg-sky-500):hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Remove underline from dropdown menu items */
+.admin-dropdown-menu a:hover,
+[role="menu"] a:hover,
+a.no-underline:hover {
+  text-decoration: none !important;
 }
 
 /* Button Focus/Active State (Subtle transition on activation) */

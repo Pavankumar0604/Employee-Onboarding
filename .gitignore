@@ -45,3 +45,8 @@ Thumbs.db
 
 # Backup files
 *.backup
+
+# Build logs and temporary files
+build-*.txt
+error*.txt
+*.log.txt

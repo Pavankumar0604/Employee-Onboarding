@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import ProfilePlaceholder from './ProfilePlaceholder';
 import Button from './Button';
 import { UploadedFile } from '../../types/onboarding';
@@ -31,7 +31,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ avatarUrl, name, onFileChan
       reader.onloadend = async () => {
         const result = reader.result;
         event.target.value = ''; // Clear input value immediately after reading
-        
+
         if (typeof result === 'string') {
           const uploadedFile: UploadedFile = {
             preview: result,
@@ -91,9 +91,9 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ avatarUrl, name, onFileChan
             alt={name}
           />
         ) : (
-          <ProfilePlaceholder user={{ full_name: name } as any} size={size} />
+          <ProfilePlaceholder photoUrl={undefined} size={size} />
         )}
-        
+
         {/* Trash Icon Overlay (Visible only if avatarUrl exists and not loading) */}
         {avatarUrl && !isLoading && (
           <div

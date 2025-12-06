@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { signUp } from '../../services/authService';
 import { SignUpFormData, SignUpFormProps } from '../../types/auth';
-import { FaUser, FaBriefcase, FaEnvelope, FaLock } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
 
 // Inline spinner for button loading state
 const InlineLoadingSpinner: React.FC = () => (
@@ -17,7 +17,7 @@ export default function SignupPage({ onNavigate }: SignUpFormProps) {
     setIsLoading(true);
     try {
       // Pass full name and job title in metadata
-      const { data: authData, error } = await signUp({
+      const { error } = await signUp({
         email: data.email,
         password: data.password,
         options: {

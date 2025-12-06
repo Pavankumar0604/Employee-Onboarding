@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { getBackOfficeIdSeries, updateBackOfficeIdSeries } from '../../services/api';
 import type { BackOfficeIdSeries } from '../../types/backoffice';
@@ -11,13 +11,13 @@ const CSV_HEADERS = ['Department', 'Designation', 'PermanentId', 'TemporaryId'];
 
 const toCSV = (data: BackOfficeIdSeries[]): string => {
     const header = CSV_HEADERS.join(',');
-    const rows = data.map(row => 
+    const rows = data.map(row =>
         [row.department, row.designation, row.permanentId, row.temporaryId]
-        .map(val => {
-            const strVal = String(val ?? '');
-            if (strVal.includes(',')) return `"${strVal}"`;
-            return strVal;
-        }).join(',')
+            .map(val => {
+                const strVal = String(val ?? '');
+                if (strVal.includes(',')) return `"${strVal}"`;
+                return strVal;
+            }).join(',')
     );
     return [header, ...rows].join('\n');
 };
@@ -25,7 +25,7 @@ const toCSV = (data: BackOfficeIdSeries[]): string => {
 const fromCSV = (csvText: string): Partial<BackOfficeIdSeries>[] => {
     const lines = csvText.trim().replace(/\r/g, '').split('\n');
     if (lines.length < 2) return [];
-    
+
     const headers = lines[0].split(',').map(h => h.trim());
     const requiredHeaders = ['Department', 'Designation', 'PermanentId', 'TemporaryId'];
     if (!requiredHeaders.every(h => headers.includes(h))) {
@@ -59,11 +59,11 @@ const BackofficeHeadsConfig: React.FC = () => {
     useEffect(() => {
         setIsLoading(true);
         getBackOfficeIdSeries()
-            .then((data: BackOfficeIdSeries[]) => reset({ series: data }))
+            .then((data: BackOfficeIdSeries[] | null) => data && reset({ series: data }))
             .catch(() => setToast({ message: 'Failed to load data.', type: 'error' }))
             .finally(() => setIsLoading(false));
     }, [reset]);
-    
+
     const watchedFields = watch("series");
 
     const groupedSeries = useMemo(() => {
@@ -86,13 +86,13 @@ const BackofficeHeadsConfig: React.FC = () => {
 
     const handleSave = async (data: { series: BackOfficeIdSeries[] }) => {
         try {
-            await updateBackOfficeIdSeries(data.series);
+            await (updateBackOfficeIdSeries as any)(data.series);
             setToast({ message: 'Configuration saved successfully.', type: 'success' });
         } catch (error) {
             setToast({ message: 'Failed to save configuration.', type: 'error' });
         }
     };
-    
+
     const handleExport = () => {
         if (!Array.isArray(watchedFields) || watchedFields.length === 0) {
             setToast({ message: 'No data to export.', type: 'error' });
@@ -161,7 +161,7 @@ const BackofficeHeadsConfig: React.FC = () => {
                 </div>
             </div>
 
-             <div className="space-y-6">
+            <div className="space-y-6">
                 {isLoading ? (
                     <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin text-accent" /></div>
                 ) : Object.keys(groupedSeries).length === 0 ? (

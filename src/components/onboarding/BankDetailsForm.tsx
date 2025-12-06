@@ -27,7 +27,7 @@ const BankDetailsForm: React.FC<BankDetailsFormProps> = ({ onValidated }) => {
   const { bank, updateBank } = useOnboardingStore();
 
   const { register, handleSubmit, formState: { errors }, control } = useForm<BankDetails>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema) as any,
     defaultValues: bank,
   });
 
@@ -43,7 +43,7 @@ const BankDetailsForm: React.FC<BankDetailsFormProps> = ({ onValidated }) => {
       <Input label="Confirm Account Number" {...register('confirmAccountNumber')} error={errors.confirmAccountNumber?.message} />
       <Input label="IFSC Code" {...register('ifscCode')} error={errors.ifscCode?.message} />
       <Input label="Bank Name" {...register('bankName')} error={errors.bankName?.message} />
-      <Input label="Branch Name" {...register('branchName')} error={errors.branchName?.message} /><br/>
+      <Input label="Branch Name" {...register('branchName')} error={errors.branchName?.message} /><br />
 
       <Controller
         control={control}

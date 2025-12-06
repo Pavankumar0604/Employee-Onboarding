@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useWatch, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -37,7 +37,7 @@ const AddressDetailsForm: React.FC<AddressDetailsFormProps> = ({ onValidated }) 
   const [pincodeError, setPincodeError] = useState('');
 
   const { register, handleSubmit, formState: { errors }, control, setValue, trigger, reset } = useForm<AddressDetails>({
-    resolver: yupResolver(addressDetailsSchema),
+    resolver: yupResolver(addressDetailsSchema) as any,
     defaultValues: address,
   });
 

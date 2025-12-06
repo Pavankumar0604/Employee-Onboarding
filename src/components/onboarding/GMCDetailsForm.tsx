@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -54,7 +54,7 @@ const GMCDetailsForm: React.FC<GMCDetailsFormProps> = ({ onValidated }) => {
   const { salaryThreshold, defaultPolicySingle, defaultPolicyMarried } = useEnrollmentRulesStore();
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<GmcDetails>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema) as any,
     defaultValues: gmc,
   });
 

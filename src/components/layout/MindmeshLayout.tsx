@@ -152,21 +152,21 @@ const Header: React.FC<HeaderProps> = ({
                                         onError={(e) => {
                                             // Fallback to icon on error
                                             e.currentTarget.style.display = 'none';
-                                            e.currentTarget.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-indigo-50');
+                                            e.currentTarget.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-sky-50');
                                             const icon = document.createElement('div');
-                                            icon.innerHTML = '<svg class="h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+                                            icon.innerHTML = '<svg class="h-5 w-5 text-sky-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
                                             e.currentTarget.parentElement?.appendChild(icon);
                                         }}
                                     />
                                 ) : (
-                                    <div className="h-full w-full bg-gradient-to-br from-indigo-100 to-white flex items-center justify-center">
-                                        <UserIcon className="h-5 w-5 text-indigo-500" />
+                                    <div className="h-full w-full bg-gradient-to-br from-sky-100 to-white flex items-center justify-center">
+                                        <UserIcon className="h-5 w-5 text-sky-500" />
                                     </div>
                                 )}
                             </div>
 
                             <div className="text-left hidden sm:flex flex-col">
-                                <p className="text-sm font-semibold text-gray-800 leading-tight group-hover:text-indigo-700 transition-colors">
+                                <p className="text-sm font-semibold text-gray-800 leading-tight group-hover:text-sky-600 transition-colors">
                                     {user?.name || 'User'}
                                 </p>
                                 <p className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
@@ -186,7 +186,7 @@ const Header: React.FC<HeaderProps> = ({
                                             navigate('/profile');
                                             setIsUserMenuOpen(false);
                                         }}
-                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150 ease-in-out"
+                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-sky-50 hover:text-sky-600 transition-colors duration-150 ease-in-out no-underline"
                                         role="menuitem"
                                     >
                                         Profile
@@ -198,7 +198,7 @@ const Header: React.FC<HeaderProps> = ({
                                             handleLogoutClick();
                                             setIsUserMenuOpen(false);
                                         }}
-                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-150 ease-in-out"
+                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-sky-50 hover:text-sky-600 transition-colors duration-150 ease-in-out no-underline"
                                         role="menuitem"
                                     >
                                         Logout

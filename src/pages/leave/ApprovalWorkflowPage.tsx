@@ -51,7 +51,7 @@ const ApprovalWorkflowPage: React.FC = () => {
         setIsSaving(true);
         try {
             // In a real app, you might want to only send changed users
-            await Promise.all(users.map(u => api.updateUserReportingManager(u.id, u.reportingManagerId || null)));
+            await Promise.all(users.map(u => api.updateUserReportingManager(u.id, u.reportingManagerId || '')));
             await api.updateApprovalWorkflowSettings(finalConfirmationRole);
             setToast({ message: 'Workflow saved successfully!', type: 'success' });
             fetchData(); // re-fetch to confirm names

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import type { UploadedFile } from '../../types/onboarding';
 import { UploadCloud, File as FileIcon, RefreshCw, Camera, Loader2, CheckCircle, Eye, Trash2, CreditCard, User as UserIcon, FileText, FileSignature, IndianRupee, GraduationCap, Fingerprint, XCircle } from 'lucide-react';
 import { api } from '../../services/api';
@@ -8,25 +8,25 @@ import ImagePreviewModal from './modals/ImagePreviewModal';
 import { useOnboardingStore } from '../../store/onboardingStore';
 
 interface UploadDocumentProps {
-  label: string;
-  file: UploadedFile | undefined | null;
-  onFileChange: (file: UploadedFile | null) => void;
-  allowedTypes?: string[];
-  error?: string;
-  ocrSchema?: any;
-  onOcrComplete?: (data: Record<string, any>) => void;
-  setToast?: (toast: { message: string, type: 'success' | 'error' } | null) => void;
-  allowCapture?: boolean;
-  onVerification?: (base64: string, mimeType: string) => Promise<{ success: boolean; reason: string }>;
-  docType?: 'Aadhaar' | 'PAN' | 'Voter ID' | 'Bank' | 'Salary' | 'UAN';
-  costingItemName?: string;
-  verificationStatus?: boolean | null;
+    label: string;
+    file: UploadedFile | undefined | null;
+    onFileChange: (file: UploadedFile | null) => void;
+    allowedTypes?: string[];
+    error?: string;
+    ocrSchema?: any;
+    onOcrComplete?: (data: Record<string, any>) => void;
+    setToast?: (toast: { message: string, type: 'success' | 'error' } | null) => void;
+    allowCapture?: boolean;
+    onVerification?: (base64: string, mimeType: string) => Promise<{ success: boolean; reason: string }>;
+    docType?: 'Aadhaar' | 'PAN' | 'Voter ID' | 'Bank' | 'Salary' | 'UAN';
+    costingItemName?: string;
+    verificationStatus?: boolean | null;
 }
 
 type VerificationStatus = 'idle' | 'verifying' | 'verified' | 'failed';
 
 
-const UploadDocument: React.FC<UploadDocumentProps> = ({ 
+const UploadDocument: React.FC<UploadDocumentProps> = ({
     label,
     file,
     onFileChange,
@@ -59,7 +59,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
         }
         return undefined;
     }, [label]);
-    
+
     const handleFileSelect = useCallback(async (selectedFile: File) => {
         if (!allowedTypes.includes(selectedFile.type)) {
             setUploadError(`Invalid file type. Allowed: ${allowedTypes.join(', ')}.`);
@@ -84,9 +84,9 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
         const reader = new FileReader();
         reader.readAsDataURL(selectedFile);
         reader.onloadend = async () => {
-             try {
+            try {
                 const base64String = (reader.result as string).split(',')[1];
-                
+
                 // Step 1: Human/Liveness Verification if applicable
                 if (onVerification) {
                     setApiVerificationStatus('verifying');
@@ -111,13 +111,13 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
 
                     // Intelligent Document Check
                     if (docType === 'Aadhaar' && !extractedData.isAadhaar) {
-                         setApiVerificationStatus('failed');
-                         const reason = extractedData.reason || 'The uploaded document is not a valid Aadhaar card.';
-                         setVerificationError(reason);
-                         if(setToast) setToast({ message: reason, type: 'error' });
-                         onFileChange(null);
-                         setIsProcessing(false);
-                         return;
+                        setApiVerificationStatus('failed');
+                        const reason = extractedData.reason || 'The uploaded document is not a valid Aadhaar card.';
+                        setVerificationError(reason);
+                        if (setToast) setToast({ message: reason, type: 'error' });
+                        onFileChange(null);
+                        setIsProcessing(false);
+                        return;
                     }
 
                     onOcrComplete(extractedData);
@@ -125,13 +125,15 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
                 }
 
                 // Step 3: Finalize upload (mocked)
-                const { url } = await api.uploadDocument(selectedFile);
+                const uploadResult = await api.uploadDocument(selectedFile);
+                if (!uploadResult) throw new Error('Upload failed');
+                const { url } = uploadResult;
                 onFileChange({ ...fileData, progress: 100, url });
 
             } catch (err: unknown) {
                 // Safely extract the error message to prevent "[object Object]"
                 const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred during processing.';
-                
+
                 setUploadError(errorMessage);
                 if (setToast) setToast({ message: errorMessage, type: 'error' });
                 onFileChange(null);
@@ -148,7 +150,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
     }, [handleFileSelect]);
 
     const handleRemove = () => {
-        if(file) URL.revokeObjectURL(file.preview);
+        if (file) URL.revokeObjectURL(file.preview);
         onFileChange(null);
         setApiVerificationStatus('idle');
         setVerificationError('');
@@ -157,7 +159,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
 
     const inputId = `file-upload-${label.replace(/\s+/g, '-')}`;
     const displayError = error || uploadError || verificationError;
-    
+
     const isBusy = isProcessing || apiVerificationStatus === 'verifying';
 
     const getIconForLabel = (label: string): React.ElementType => {
@@ -186,8 +188,8 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
                 {verificationStatus === false && <span title="Verification Failed"><XCircle className="h-4 w-4 text-red-400" /></span>}
             </div>
 
-            <div 
-                 className={`
+            <div
+                className={`
                     flex flex-col items-center justify-center transition-all duration-300
                     w-full text-center rounded-2xl bg-[#243524]
                     ${isFieldOfficer ? 'min-h-[150px]' : 'min-h-[200px]'}
@@ -199,7 +201,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
                     <div className="w-full flex flex-col h-full">
                         <label htmlFor={inputId} className="flex-grow w-full rounded-md overflow-hidden cursor-pointer group relative bg-black/20 flex items-center justify-center min-h-[100px]">
                             {file.type.startsWith('image/') ? (
-                                 <img src={file.preview} alt="preview" className="max-w-full max-h-full object-contain" />
+                                <img src={file.preview} alt="preview" className="max-w-full max-h-full object-contain" />
                             ) : (
                                 <div className="text-gray-400 p-2">
                                     <FileIcon className="h-10 w-10 mx-auto" />
@@ -212,7 +214,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
                         </label>
                         <div className="mt-2 flex items-center justify-center gap-2 flex-shrink-0">
                             {file.type.startsWith('image/') && (
-                                 <button type="button" onClick={() => setIsPreviewOpen(true)} className="text-xs font-medium text-accent hover:underline flex items-center gap-1 p-1">
+                                <button type="button" onClick={() => setIsPreviewOpen(true)} className="text-xs font-medium text-accent hover:underline flex items-center gap-1 p-1">
                                     <Eye className="h-3 w-3" /> View
                                 </button>
                             )}
@@ -240,11 +242,11 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({
                     </>
                 )}
             </div>
-            
-            <input id={inputId} type="file" className="sr-only" onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])} accept={allowedTypes.join(',')}/>
-            
+
+            <input id={inputId} type="file" className="sr-only" onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])} accept={allowedTypes.join(',')} />
+
             <div className="text-center mt-1 min-h-[16px]">
-                {isBusy && <div className="text-sm flex items-center justify-center gap-2 text-muted animate-pulse"><Loader2 className="h-4 w-4 animate-spin"/> Verifying...</div>}
+                {isBusy && <div className="text-sm flex items-center justify-center gap-2 text-muted animate-pulse"><Loader2 className="h-4 w-4 animate-spin" /> Verifying...</div>}
                 {displayError && <p className="text-xs text-red-500">{displayError}</p>}
             </div>
         </div>
