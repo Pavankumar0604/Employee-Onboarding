@@ -58,14 +58,14 @@ const TicketCard: React.FC<{ ticket: SupportTicket, onClick: () => void }> = ({ 
 
 
 const SupportDashboard: React.FC = () => {
-    const {  } = useAuthStore();
+    const { } = useAuthStore();
     const navigate = useNavigate();
     const [tickets, setTickets] = useState<SupportTicket[]>([]);
     const [nearbyUsers, setNearbyUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
     const [isNewTicketModalOpen, setIsNewTicketModalOpen] = useState(false);
-        
+
     const [filters, setFilters] = useState({
         status: 'all',
         priority: 'all',
@@ -95,7 +95,7 @@ const SupportDashboard: React.FC = () => {
         return tickets.filter(ticket => {
             const statusMatch = filters.status === 'all' || ticket.status === filters.status;
             const priorityMatch = filters.priority === 'all' || ticket.priority === filters.priority;
-            const searchMatch = filters.searchTerm === '' || 
+            const searchMatch = filters.searchTerm === '' ||
                 ticket.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
                 ticket.ticketNumber.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
                 ticket.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
@@ -115,7 +115,7 @@ const SupportDashboard: React.FC = () => {
         setToast({ message: 'New ticket created successfully!', type: 'success' });
         navigate(`/support/ticket/${newTicket.id}`);
     };
-    
+
     const openWhatsAppChat = (phone?: string) => {
         if (!phone) {
             setToast({ message: 'User does not have a phone number.', type: 'error' });
@@ -123,7 +123,7 @@ const SupportDashboard: React.FC = () => {
         }
         // Remove all non-digit characters.
         let numberToCall = phone.replace(/\D/g, '');
-        
+
         // Corrected logic to handle various formats robustly
         if (numberToCall.length === 10) {
             // Standard 10-digit number, prepend 91
@@ -141,10 +141,10 @@ const SupportDashboard: React.FC = () => {
                 numberToCall = '91' + last10;
             }
         }
-        
+
         window.open(`https://wa.me/${numberToCall}`, '_blank');
     };
-    
+
     const StatCard: React.FC<{ title: string, value: number, className?: string }> = ({ title, value, className }) => (
         <div className={`p-4 rounded-lg ${className}`}>
             <p className="text-sm text-muted">{title}</p>
@@ -183,15 +183,15 @@ const SupportDashboard: React.FC = () => {
                 <div className="lg:col-span-2">
                     <div className="bg-card p-4 rounded-xl shadow-card">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                             <div className="relative col-span-1 sm:col-span-3">
+                            <div className="relative col-span-1 sm:col-span-3">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted" />
-                                <Input id="search" placeholder="Search tickets..." className="pl-10" value={filters.searchTerm} onChange={e => setFilters(f => ({...f, searchTerm: e.target.value}))} />
+                                <Input id="search" placeholder="Search tickets..." className="pl-10" value={filters.searchTerm} onChange={e => setFilters(f => ({ ...f, searchTerm: e.target.value }))} />
                             </div>
-                            <Select label="Status" value={filters.status} onChange={e => setFilters(f => ({...f, status: e.target.value}))}><option value="all">All Statuses</option><option>Open</option><option>In Progress</option><option value="Pending Requester">Pending Requester</option><option>Resolved</option><option>Closed</option></Select>
-                            <Select label="Priority" value={filters.priority} onChange={e => setFilters(f => ({...f, priority: e.target.value}))}><option value="all">All Priorities</option><option>Low</option><option>Medium</option><option>High</option><option>Urgent</option></Select>
+                            <Select label="Status" value={filters.status} onChange={e => setFilters(f => ({ ...f, status: e.target.value }))}><option value="all">All Statuses</option><option>Open</option><option>In Progress</option><option value="Pending Requester">Pending Requester</option><option>Resolved</option><option>Closed</option></Select>
+                            <Select label="Priority" value={filters.priority} onChange={e => setFilters(f => ({ ...f, priority: e.target.value }))}><option value="all">All Priorities</option><option>Low</option><option>Medium</option><option>High</option><option>Urgent</option></Select>
                         </div>
                         {isLoading ? (
-                            <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin text-accent"/></div>
+                            <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin text-accent" /></div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                                 {filteredTickets.length > 0 ? filteredTickets.map(ticket => (
@@ -206,12 +206,12 @@ const SupportDashboard: React.FC = () => {
 
                 <aside className="hidden lg:block space-y-6">
                     <div className="bg-card p-4 rounded-xl shadow-card">
-                        <h3 className="font-semibold text-primary-text mb-3 flex items-center gap-2"><Users className="h-5 w-5 text-muted"/> Nearby Available Users</h3>
+                        <h3 className="font-semibold text-primary-text mb-3 flex items-center gap-2"><Users className="h-5 w-5 text-muted" /> Nearby Available Users</h3>
                         <div className="space-y-3">
                             {nearbyUsers.map(u => (
                                 <div key={u.id} className="flex items-center gap-3">
                                     <div className="relative">
-                                        <ProfilePlaceholder photoUrl={u.photo_url} seed={u.id} className="w-10 h-10 rounded-full" />
+                                        <ProfilePlaceholder photoUrl={u.photo_url} className="w-10 h-10 rounded-full" />
                                         <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-card"></span>
                                     </div>
                                     <div className="flex-grow">
@@ -219,15 +219,15 @@ const SupportDashboard: React.FC = () => {
                                         <p className="text-xs text-muted">{u.role.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}</p>
                                     </div>
                                     <div className="flex items-center gap-1">
-                                        <Button variant="icon" size="sm" title="WhatsApp Chat" onClick={() => openWhatsAppChat(u.phone_number ?? undefined)}><Phone className="h-4 w-4"/></Button>
-                                        <Button variant="icon" size="sm" title="WhatsApp Chat" onClick={() => openWhatsAppChat(u.phone_number ?? undefined)}><MessageSquare className="h-4 w-4"/></Button>
+                                        <Button variant="icon" size="sm" title="WhatsApp Chat" onClick={() => openWhatsAppChat(u.phone_number ?? undefined)}><Phone className="h-4 w-4" /></Button>
+                                        <Button variant="icon" size="sm" title="WhatsApp Chat" onClick={() => openWhatsAppChat(u.phone_number ?? undefined)}><MessageSquare className="h-4 w-4" /></Button>
                                         <Button
                                             variant="icon"
                                             size="sm"
                                             title="WhatsApp Chat"
                                             onClick={() => openWhatsAppChat(u.phone_number ?? undefined)}
                                         >
-                                            <Video className="h-4 w-4"/>
+                                            <Video className="h-4 w-4" />
                                         </Button>
                                     </div>
                                 </div>

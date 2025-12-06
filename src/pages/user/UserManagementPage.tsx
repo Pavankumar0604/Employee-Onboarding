@@ -15,10 +15,10 @@ const UserManagement: React.FC = () => {
 
     const [isUserFormOpen, setIsUserFormOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    
+
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-    
+
     const fetchUsers = useCallback(async () => {
         setIsLoading(true);
         try {
@@ -35,7 +35,7 @@ const UserManagement: React.FC = () => {
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
-    
+
     const handleAdd = () => {
         setCurrentUser(null);
         setIsUserFormOpen(true);
@@ -58,7 +58,8 @@ const UserManagement: React.FC = () => {
                 await api.updateUserProfile(currentUser.id, data);
                 setToast({ message: 'User updated successfully!', type: 'success' });
             } else {
-                await api.createUserProfile(data as User);
+                // For new users, use update with the provided data
+                await api.updateUserProfile(data.id || '', data);
                 setToast({ message: 'User role defined. Please create their login in Firebase.', type: 'success' });
             }
             setIsUserFormOpen(false);
@@ -69,7 +70,7 @@ const UserManagement: React.FC = () => {
             setIsSaving(false);
         }
     };
-    
+
     const handleConfirmDelete = async () => {
         if (currentUser) {
             try {
@@ -94,7 +95,7 @@ const UserManagement: React.FC = () => {
     return (
         <div className="bg-card p-6 sm:p-8 rounded-xl shadow-card">
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-            
+
             <UserForm
                 isOpen={isUserFormOpen}
                 onClose={() => setIsUserFormOpen(false)}
@@ -111,12 +112,12 @@ const UserManagement: React.FC = () => {
             >
                 Are you sure you want to delete the user "{currentUser?.name}"? This action cannot be undone.
             </Modal>
-            
+
             <AdminPageHeader title="User Management">
-                 <Button onClick={handleAdd}><Plus className="mr-2 h-4 w-4" /> Add User</Button>
+                <Button onClick={handleAdd}><Plus className="mr-2 h-4 w-4" /> Add User</Button>
             </AdminPageHeader>
 
-             <div className="mb-6 bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg text-sm">
+            <div className="mb-6 bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg text-sm">
                 <div className="flex items-start">
                     <Info className="h-5 w-5 mr-3 flex-shrink-0 mt-0.5" />
                     <div>

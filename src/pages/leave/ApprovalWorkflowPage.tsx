@@ -62,7 +62,7 @@ const ApprovalWorkflowPage: React.FC = () => {
             setIsSaving(false);
         }
     };
-    
+
     const allRoles: ConfirmationRole[] = ['admin', 'hr', 'operation_manager'];
 
     const formatRole = (role: UserRole | ConfirmationRole) => role.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
@@ -87,7 +87,7 @@ const ApprovalWorkflowPage: React.FC = () => {
                     Select the role responsible for the final confirmation of a leave request after it has been approved by the reporting manager chain.
                 </p>
                 <div className="max-w-xs">
-                     <Select label="Final Confirmation Role" id="final-approver" value={finalConfirmationRole} onChange={e => setFinalConfirmationRole(e.target.value as ConfirmationRole)}>
+                    <Select label="Final Confirmation Role" id="final-approver" value={finalConfirmationRole} onChange={e => setFinalConfirmationRole(e.target.value as ConfirmationRole)}>
                         {allRoles.map(role => <option key={role} value={role}>{formatRole(role)}</option>)}
                     </Select>
                 </div>
@@ -99,7 +99,7 @@ const ApprovalWorkflowPage: React.FC = () => {
                     <Users className="h-6 w-6 text-indigo-600 mr-3" />
                     <h3 className="text-xl font-semibold text-gray-800">Reporting Structure</h3>
                 </div>
-                 <p className="text-sm text-gray-500 mb-6">
+                <p className="text-sm text-gray-500 mb-6">
                     For each employee, assign a reporting manager. Leave requests will be sent to this manager for first-level approval.
                 </p>
                 <div className="overflow-x-auto border border-gray-200 rounded-lg">
@@ -113,7 +113,7 @@ const ApprovalWorkflowPage: React.FC = () => {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {isLoading ? (
-                                <tr><td colSpan={3} className="text-center py-10"><Loader2 className="h-6 w-6 animate-spin mx-auto text-indigo-600"/></td></tr>
+                                <tr><td colSpan={3} className="text-center py-10"><Loader2 className="h-6 w-6 animate-spin mx-auto text-indigo-600" /></td></tr>
                             ) : (
                                 users.length === 0 ? (
                                     <tr><td colSpan={3} className="text-center py-10 text-gray-500">No users found.</td></tr>

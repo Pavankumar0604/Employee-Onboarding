@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { UserActivityRecord } from '../types/mindmesh';
-import { MOCK_ACTIVITY_RECORDS } from '../mocks/mockData';
-// import { supabase } from '../config/supabaseClient';
+// import { supabase } from '../lib/supabase';
+
 const fetchUserActivity = async (): Promise<UserActivityRecord[]> => {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 500));
@@ -11,7 +11,7 @@ const fetchUserActivity = async (): Promise<UserActivityRecord[]> => {
   // if (error) throw error;
   // return data as UserActivityRecord[];
 
-  return MOCK_ACTIVITY_RECORDS as UserActivityRecord[];
+  return [] as UserActivityRecord[]; // Return empty array for now
 };
 
 export const useFetchUserActivity = () => {

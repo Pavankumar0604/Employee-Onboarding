@@ -14,7 +14,7 @@ const siteCsvColumns = ['id', 'shortName', 'fullName', 'address', 'manpowerAppro
 
 const toCSV = (data: Record<string, any>[], columns: string[]): string => {
     const header = columns.join(',');
-    const rows = data.map(row => 
+    const rows = data.map(row =>
         columns.map(col => {
             const val = row[col] === null || row[col] === undefined ? '' : String(row[col]);
             if (val.includes(',') || val.includes('"') || val.includes('\n')) {
@@ -29,7 +29,7 @@ const toCSV = (data: Record<string, any>[], columns: string[]): string => {
 const fromCSV = (csvText: string): Record<string, string>[] => {
     const lines = csvText.trim().replace(/\r/g, '').split('\n');
     if (lines.length < 2) return [];
-    
+
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     const rows: Record<string, string>[] = [];
 
@@ -37,7 +37,7 @@ const fromCSV = (csvText: string): Record<string, string>[] => {
         const row: Record<string, string> = {};
         // Regex for CSV parsing, handles quoted fields containing commas.
         const values = lines[i].match(/(?<=,|^)(?:"(?:[^"]|"")*"|[^,]*)/g) || [];
-        
+
         headers.forEach((header, index) => {
             let value = (values[index] || '').trim();
             if (value.startsWith('"') && value.endsWith('"')) {
@@ -55,19 +55,19 @@ const fromCSV = (csvText: string): Record<string, string>[] => {
 
 const SiteManagement: React.FC = () => {
     const [organizations, setOrganizations] = useState<Organization[]>([]);
-        const [allClients, setAllClients] = useState<(Entity & { companyName: string })[]>([]);
+    const [allClients, setAllClients] = useState<(Entity & { companyName: string })[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    
+
     const [isAddSiteModalOpen, setIsAddSiteModalOpen] = useState(false);
     const [isSiteConfigFormOpen, setIsSiteConfigFormOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-    
+
     const [editingOrgForConfig, setEditingOrgForConfig] = useState<Organization | null>(null);
     const [currentOrg, setCurrentOrg] = useState<Organization | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-    const [manpowerDetails, ] = useState<ManpowerDetail[]>([]);
+    const [manpowerDetails,] = useState<ManpowerDetail[]>([]);
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
     const importRef = useRef<HTMLInputElement>(null);
 
@@ -84,7 +84,7 @@ const SiteManagement: React.FC = () => {
                 .filter(user => user.organizationId === null)
                 .map(user => ({
                     id: user.id,
-                    name: user.full_name || user.email || 'Unknown User',
+                    name: user.name || user.email || 'Unknown User',
                     companyName: 'N/A',
                     organizationId: user.organizationId || undefined,
                     location: (user as any).location || 'N/A',
@@ -111,13 +111,13 @@ const SiteManagement: React.FC = () => {
         setCurrentOrg(org);
         setIsDeleteModalOpen(true);
     };
-    
+
     const handleAddSite = (client: Entity, manpowerCount: number) => {
         if (client.organizationId && organizations.some(org => org.id === client.organizationId)) {
             setToast({ message: 'A site for this client already exists.', type: 'error' });
             return;
         }
-        
+
         const newSite: Organization = {
             id: client.organizationId || `site_${Date.now()}`,
             name: client.name,
@@ -128,13 +128,13 @@ const SiteManagement: React.FC = () => {
             location: client.location || '',
             manager_id: '', // This might need to be dynamic based on actual manager assignment
         };
-    
+
         setOrganizations(prev => [newSite, ...prev].sort((a, b) => (a.shortName || '').localeCompare(b.shortName || '')));//Added null check
         setIsAddSiteModalOpen(false);
         setToast({ message: 'Site added successfully. You can now configure it.', type: 'success' });
         fetchData(); // Ensure data consistency after adding a new site, addressing the enrollment reflection requirement.
     };
-    
+
     const handleSaveSiteConfig = () => {
         // setSiteConfigs(prev => { // Removed
         //     const newConfigs = [...prev]; // Removed
@@ -155,7 +155,7 @@ const SiteManagement: React.FC = () => {
             setIsDeleteModalOpen(false);
         }
     };
-    
+
     const handleViewDetails = async (org: Organization) => {
         setCurrentOrg(org);
         setIsDetailsLoading(true);
@@ -174,10 +174,10 @@ const SiteManagement: React.FC = () => {
         if (!currentOrg) return;
         // try { // Removed
         //     await api.updateManpowerDetails(currentOrg.id, details); // Removed
-            
+
         const newTotal = details.reduce((sum, item) => sum + (Number(item.count) || 0), 0);
-        setOrganizations(prevOrgs => 
-            prevOrgs.map(org => 
+        setOrganizations(prevOrgs =>
+            prevOrgs.map(org =>
                 org.id === currentOrg.id ? { ...org, manpowerApprovedCount: newTotal } : org
             )
         );
@@ -247,7 +247,7 @@ const SiteManagement: React.FC = () => {
     return (
         <div className="bg-card p-6 sm:p-8 rounded-xl shadow-card">
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-            
+
             <input type="file" ref={importRef} className="hidden" accept=".csv" onChange={handleImport} />
 
             <AddSiteFromClientForm
@@ -256,9 +256,9 @@ const SiteManagement: React.FC = () => {
                 onSave={handleAddSite}
                 clients={allClients}
             />
-            
+
             {isSiteConfigFormOpen && editingOrgForConfig && (
-                <SiteConfigurationForm 
+                <SiteConfigurationForm
                     isOpen={isSiteConfigFormOpen}
                     onClose={() => setIsSiteConfigFormOpen(false)}
                     onSave={handleSaveSiteConfig}
@@ -289,11 +289,11 @@ const SiteManagement: React.FC = () => {
             </Modal>
 
             <AdminPageHeader title="Site Management">
-                 {/* <Button variant="outline" onClick={() => importRef.current?.click()}><Upload className="mr-2 h-4 w-4" /> Import Sites</Button> */}
-                 <Button borderRadius="rounded-[50px] px-4 py-2 mr-2" variant="outline" onClick={handleExport}><Download className="mr-2 h-4 w-4" /> Export Sites</Button>
-                 <Button borderRadius="rounded-[50px] px-4 py-2" variant="primary" onClick={() => setIsAddSiteModalOpen(true)}><Plus className="mr-2 h-4 w-4" /> Add Site</Button>
-             </AdminPageHeader>
-            
+                {/* <Button variant="outline" onClick={() => importRef.current?.click()}><Upload className="mr-2 h-4 w-4" /> Import Sites</Button> */}
+                <Button borderRadius="rounded-[50px] px-4 py-2 mr-2" variant="outline" onClick={handleExport}><Download className="mr-2 h-4 w-4" /> Export Sites</Button>
+                <Button borderRadius="rounded-[50px] px-4 py-2" variant="primary" onClick={() => setIsAddSiteModalOpen(true)}><Plus className="mr-2 h-4 w-4" /> Add Site</Button>
+            </AdminPageHeader>
+
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-border">
                     <thead className="bg-muted/50">
@@ -309,22 +309,22 @@ const SiteManagement: React.FC = () => {
                         {isLoading ? (
                             <tr><td colSpan={5} className="text-center py-10 text-muted">Loading sites...</td></tr>
                         ) : organizations.map((org) => (
-                                <tr key={org.id} className="hover:bg-muted/50 transition-colors">
-                                    <td className="px-6 py-4 font-medium whitespace-nowrap">{org.shortName}</td>
-                                    <td className="px-6 py-4 text-sm">
-                                      <span className="text-muted">N/A</span> {/* Hardcoded N/A as client data fetching is removed */}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-muted break-all">{org.id}</td>
-                                    <td className="px-6 py-4 text-sm text-foreground font-mono">{org.manpowerApprovedCount || 'N/A'}</td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <Button variant="icon" size="sm" onClick={() => handleViewDetails(org)} title="View Manpower Details"><Eye className="h-4 w-4" /></Button>
-                                            <Button variant="icon" size="sm" onClick={() => handleEdit(org)} title="Configure Site"><Edit className="h-4 w-4" /></Button>
-                                            <Button variant="icon" size="sm" onClick={() => handleDelete(org)} title="Delete Site"><Trash2 className="h-4 w-4 text-red-600" /></Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )
+                            <tr key={org.id} className="hover:bg-muted/50 transition-colors">
+                                <td className="px-6 py-4 font-medium whitespace-nowrap">{org.shortName}</td>
+                                <td className="px-6 py-4 text-sm">
+                                    <span className="text-muted">N/A</span> {/* Hardcoded N/A as client data fetching is removed */}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-muted break-all">{org.id}</td>
+                                <td className="px-6 py-4 text-sm text-foreground font-mono">{org.manpowerApprovedCount || 'N/A'}</td>
+                                <td className="px-6 py-4">
+                                    <div className="flex items-center gap-2">
+                                        <Button variant="icon" size="sm" onClick={() => handleViewDetails(org)} title="View Manpower Details"><Eye className="h-4 w-4" /></Button>
+                                        <Button variant="icon" size="sm" onClick={() => handleEdit(org)} title="Configure Site"><Edit className="h-4 w-4" /></Button>
+                                        <Button variant="icon" size="sm" onClick={() => handleDelete(org)} title="Delete Site"><Trash2 className="h-4 w-4 text-red-600" /></Button>
+                                    </div>
+                                </td>
+                            </tr>
+                        )
                         )}
                     </tbody>
                 </table>
