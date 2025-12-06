@@ -1,7 +1,4 @@
 {
-    "buildOptions": {
-        "out": "dist"
-    },
     "framework": null,
     "outputDirectory": "dist",
     "installCommand": "npm install",
