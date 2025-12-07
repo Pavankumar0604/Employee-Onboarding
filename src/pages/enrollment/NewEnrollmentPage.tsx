@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import EditIcon from '../../assests/edit.svg?react';
+import { Edit } from 'lucide-react';
+
 const NewEnrollmentPage = () => {
   const navigate = useNavigate();
 
@@ -12,7 +13,7 @@ const NewEnrollmentPage = () => {
       <div className="new-enrollment-container">
         <div className="icon-container">
           <span className="edit-icon">
-            <EditIcon />
+            <Edit className="h-12 w-12" />
           </span>
         </div>
         <h1>Welcome to Employee Onboarding</h1>
