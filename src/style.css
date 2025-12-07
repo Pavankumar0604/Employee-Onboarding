@@ -2,9 +2,17 @@
 /* === GLOBAL BASE STYLES (Original Content) ================================ */
 /* ========================================================================== */
 
+@import './dark-mode-components.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html.dark {
+    color-scheme: dark;
+  }
+}
 
 html,
 body {
@@ -35,6 +43,7 @@ body::-webkit-scrollbar {
 /* Main Background: Platinum (#F7F7F7) - for sections and cards */
 body {
   background-color: var(--color-background);
+  color: var(--color-text-main);
   font-family: sans-serif;
   margin: 0;
   padding: 0;
@@ -42,6 +51,7 @@ body {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Primary Text: Charcoal Black (#232323) - for main headings and body text */
@@ -49,12 +59,14 @@ h1,
 h2,
 h3 {
   color: var(--color-text-main);
+  transition: color 0.3s ease;
 }
 
 p,
 label,
 div {
   color: var(--color-text-main);
+  transition: color 0.3s ease;
 }
 
 a {
@@ -103,6 +115,25 @@ h6 {
   margin-bottom: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Dark mode cards - Premium styling */
+.dark .card,
+.dark .panel {
+  background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+  border: 1px solid #475569;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(148, 163, 184, 0.1);
+}
+
+.dark .card:hover,
+.dark .panel:hover {
+  border-color: #64748b;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(16, 185, 129, 0.1);
 }
 
 /* Button Hover: Silver (#BDBDBD) - for a subtle hover effect */
@@ -260,19 +291,64 @@ a.no-underline:hover {
 }
 
 /* ========================================================================== */
+/* === DARK MODE COLOR OVERRIDES ============================================ */
+/* ========================================================================== */
+
+.dark {
+  /* Dark backgrounds */
+  --color-background: #0f172a;
+  --color-bg-platinum: #1e293b;
+  --color-card-white: #1e293b;
+  --color-bg-card: #1e293b;
+  --color-bg-dashboard: #0f172a;
+  --color-bg-light-gray: #334155;
+  --color-primary-light: #1e3a5f;
+
+  /* Dark text colors */
+  --color-text-main: #f1f5f9;
+  --color-text-jet: #f1f5f9;
+  --color-text-primary: #f1f5f9;
+  --color-text-inactive: #94a3b8;
+
+  /* Dark borders */
+  --color-border-light: #334155;
+  --color-primary-border: #475569;
+
+  /* Dark shadows */
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
+  --shadow-moderate: 0 10px 25px rgba(0, 0, 0, 0.5), 0 3px 8px rgba(0, 0, 0, 0.4);
+
+  /* Sidebar and header */
+  --color-sidebar-dark: #1e293b;
+  --color-dashboard-header-dark: #1e293b;
+  --color-divider-soft: rgba(255, 255, 255, 0.1);
+
+  /* Hover states */
+  --color-charcoal-hover: #64748b;
+  --color-hover-focus: #64748b;
+
+  /* Keep brand colors visible */
+  --color-crimson: #ef4444;
+}
+
+/* ========================================================================== */
 /* === LAYOUT STYLES (From MindmeshLayout.module.css) ======================= */
 /* ========================================================================== */
 
 .layout-appLayout {
   display: flex;
-  height: 100vh;
+  padding: 20px;
+  /* Outer padding for the whole layout */
+  gap: 20px;
+  min-height: 100vh;
   background-color: var(--color-bg-platinum);
   /* Soft background layering */
-  padding: 20px;
-  /* Revert padding */
-  gap: 20px;
-  /* Revert gap */
-  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+/* Dark mode app layout */
+.dark .layout-appLayout {
+  background-color: #0f172a;
 }
 
 /* --- Sidebar Styles (New Minimalist Design) --- */
@@ -299,8 +375,16 @@ a.no-underline:hover {
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  transition: width 0.3s ease-in-out;
+  transition: width 0.3s ease-in-out, background-color 0.3s ease;
 }
+
+/* Dark mode sidebar */
+.dark .layout-sidebarCard {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
 
 .layout-sidebarCollapsed {
   width: 72px;
@@ -412,6 +496,12 @@ a.no-underline:hover {
   /* Readable font size */
 }
 
+/* Dark mode nav links */
+.dark .layout-navLink {
+  color: #e2e8f0;
+  /* Light slate for dark mode */
+}
+
 .layout-navLink:hover {
   background-color: rgba(0, 0, 0, 0.08);
   /* Slightly darker hover background */
@@ -420,15 +510,28 @@ a.no-underline:hover {
   text-decoration: none;
 }
 
+/* Dark mode hover */
+.dark .layout-navLink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
 .layout-navLinkActive {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary);
   /* Bright Green active background */
   color: var(--color-card-white);
   font-weight: 600;
-  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 10px rgba(100, 181, 246, 0.3);
   /* Subtle shadow for active state */
   transform: translateY(-1px);
   /* Slight lift */
+}
+
+/* Dark mode active */
+.dark .layout-navLinkActive {
+  background-color: #1976D2;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(25, 118, 210, 0.5);
 }
 
 .layout-navLinkActive .layout-navIcon {
@@ -437,8 +540,13 @@ a.no-underline:hover {
 }
 
 .layout-navLinkActive:hover {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary-dark);
   color: var(--color-card-white);
+}
+
+/* Dark mode active hover */
+.dark .layout-navLinkActive:hover {
+  background-color: #1565C0;
 }
 
 .layout-navIcon {
@@ -452,8 +560,19 @@ a.no-underline:hover {
   transition: color 0.2s ease;
 }
 
+/* Dark mode icons */
+.dark .layout-navIcon {
+  color: #94a3b8;
+  /* Lighter gray for dark mode */
+}
+
 .layout-navLinkActive .layout-navIcon {
   color: var(--color-card-white);
+}
+
+/* Dark mode active icon */
+.dark .layout-navLinkActive .layout-navIcon {
+  color: #ffffff;
 }
 
 .layout-navLinkCollapsed {
@@ -481,23 +600,32 @@ a.no-underline:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
   /* Custom softer shadow for main content */
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Dark mode main content - Matching sidebar style */
+.dark .layout-mainContentArea {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
 .layout-mainContentScroll {
   flex-grow: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
-  /* Revert padding */
   -ms-overflow-style: none;
-  /* IE and Edge */
+  /* Hide scrollbar for IE and Edge */
   scrollbar-width: none;
-  /* Firefox */
-  /* Revert centering properties */
-  display: block;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+  /* Hide scrollbar for Firefox */
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.layout-mainContentScroll::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* --- Header Styles (Top Bar) --- */
 .layout-header {
@@ -506,14 +634,21 @@ a.no-underline:hover {
   z-index: 20;
   background-color: var(--color-card-white);
   /* Match main card background */
-  padding: 20px 20px 0 20px;
-  /* Add back horizontal padding for header content */
+  padding: 0 24px;
+  /* Balanced horizontal padding, vertical centering handled by flex */
   display: flex;
   justify-content: space-between;
   /* Distribute items evenly */
   align-items: center;
   height: 80px;
   flex-shrink: 0;
+  transition: background-color 0.3s ease;
+}
+
+/* Dark mode header */
+.dark .layout-header {
+  background-color: #1e293b;
+  border-bottom: 1px solid #334155;
 }
 
 /* User Dropdown */
@@ -1238,11 +1373,13 @@ a.no-underline:hover {
 }
 
 .step-circle.current {
-  background-color: white;
+  background-color: #0EA5E9;
+  /* Sky Blue */
   border-color: #0EA5E9;
   /* Sky Blue */
-  color: #0EA5E9;
-  /* Sky Blue */
+  color: white;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.2);
+  /* Add glow for active state */
 }
 
 .step-circle.upcoming {

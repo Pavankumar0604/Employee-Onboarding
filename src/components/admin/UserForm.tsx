@@ -67,10 +67,17 @@ const UserForm: React.FC<UserFormProps> = ({ isOpen, onClose, onSave, initialDat
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-100 bg-opacity-75">
-      <div className="bg-white rounded-xl shadow-md p-8 w-full max-w-lg m-4 animate-fade-in-scale">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <h3 className="text-2xl font-semibold text-gray-900">{isEditing ? 'Edit User' : 'Add User'}</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 overflow-y-auto" onClick={onClose}>
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg my-8" onClick={e => e.stopPropagation()}>
+        {/* Simple Header */}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h3 className="text-xl font-semibold text-gray-800">
+            {isEditing ? 'Edit User' : 'Add User'}
+          </h3>
+        </div>
+
+        {/* Form Content */}
+        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-6 space-y-4">
           <div>
             <Tooltip content="Enter the user's full name (first and last).">
               <Input label="Full Name (First and Last)" id="name" {...register('name')} error={errors.name?.message} />
@@ -111,9 +118,24 @@ const UserForm: React.FC<UserFormProps> = ({ isOpen, onClose, onSave, initialDat
               />
             )}
           </div>
-          <div className="mt-6 flex justify-end space-x-3">
-            <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
-            <Button type="submit" loading={isSaving}>{isEditing ? 'Save Changes' : 'Create User'}</Button>
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="secondary"
+              className="px-5 py-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              loading={isSaving}
+              className="px-5 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors"
+            >
+              {isEditing ? 'Save Changes' : 'Create User'}
+            </Button>
           </div>
         </form>
       </div>

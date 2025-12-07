@@ -135,7 +135,7 @@ const Header: React.FC<HeaderProps> = ({
                     {/* Desktop Logo placeholder (if needed, currently handled by sidebar) */}
                 </div>
 
-                {/* Right side: Notifications and User */}
+                {/* Right side: Theme Toggle, Notifications and User */}
                 <div className="flex items-center gap-6">
                     <NotificationBell />
                     <div className="relative" ref={userMenuRef}>
@@ -389,7 +389,7 @@ const MindmeshLayout: React.FC<MindmeshLayoutProps> = () => {
 
     return (
         <motion.div
-            className="layout-appLayout"
+            className="layout-appLayout transition-colors duration-200"
             variants={layoutVariants as any}
             initial="hidden"
             animate="visible"

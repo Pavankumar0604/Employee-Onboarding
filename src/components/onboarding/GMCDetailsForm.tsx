@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -42,10 +42,15 @@ const validationSchema = yup.object({
 }).defined();
 
 interface GMCDetailsFormProps {
-  onValidated: () => void;
+  onValidated?: () => void;
+  hideSubmit?: boolean;
 }
 
-const GMCDetailsForm: React.FC<GMCDetailsFormProps> = ({ onValidated }) => {
+export interface FormHandle {
+  submit: () => void;
+}
+
+const GMCDetailsForm = forwardRef<FormHandle, GMCDetailsFormProps>(({ onValidated, hideSubmit }, ref) => {
   const gmc = useOnboardingStore(state => state.gmc);
   const updateGmc = useOnboardingStore(state => state.updateGmc);
   const personalSalary = useOnboardingStore(state => state.personal.salary);
@@ -78,8 +83,14 @@ const GMCDetailsForm: React.FC<GMCDetailsFormProps> = ({ onValidated }) => {
 
   const onSubmit: SubmitHandler<GmcDetails> = (formData) => {
     updateGmc(formData);
-    onValidated();
+    if (onValidated) onValidated();
   };
+
+  useImperativeHandle(ref, () => ({
+    submit: () => {
+      handleSubmit(onSubmit)();
+    }
+  }));
 
   if (!isGmcApplicable) {
     const thresholdText = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(salaryThreshold);
@@ -93,51 +104,75 @@ const GMCDetailsForm: React.FC<GMCDetailsFormProps> = ({ onValidated }) => {
   const marriedPolicyText = defaultPolicyMarried.replace('L', ' Lakh');
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-
-      <label>
-        <input type="radio" value="true" {...register('isOptedIn')} />
-        Opted In
-      </label>
-      <label>
-        <input type="radio" value="false" {...register('isOptedIn')} />
-        Opted Out
-      </label>
-      {errors.isOptedIn && <p className="error">{errors.isOptedIn.message}</p>}
-
-      {watch('isOptedIn') === false && (
-        <div>
-          <label>Reason for opting out</label>
-          <input {...register('optOutReason')} />
-          {errors.optOutReason && <p className="error">{errors.optOutReason.message}</p>}
-        </div>
-      )}
-
-      {watch('isOptedIn') === true && (
-        <>
-          <label>
-            Select Policy Amount
-            {maritalStatus === 'Married' && (
-              <p>As a married employee, you are automatically enrolled in the {marriedPolicyText} policy.</p>
-            )}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="space-y-4">
+        <div className="flex gap-4">
+          <label className="flex items-center gap-2">
+            <input type="radio" value="true" {...register('isOptedIn')} className="h-4 w-4 text-cyan-500 border-gray-300 focus:ring-cyan-500" />
+            <span className="text-gray-700 font-medium">Opt-in for GMC</span>
           </label>
-          <select {...register('policyAmount')}>
-            <option value="">Select</option>
-            <option value="1L">1 Lakh Policy</option>
-            <option value="2L">2 Lakh Policy</option>
-          </select>
-          {errors.policyAmount && <p className="error">{errors.policyAmount.message}</p>}
+          <label className="flex items-center gap-2">
+            <input type="radio" value="false" {...register('isOptedIn')} className="h-4 w-4 text-cyan-500 border-gray-300 focus:ring-cyan-500" />
+            <span className="text-gray-700 font-medium">Opt-out of GMC</span>
+          </label>
+        </div>
+        {errors.isOptedIn && <p className="text-red-500 text-sm mt-1">{errors.isOptedIn.message}</p>}
 
-          <Input label="Nominee Name" {...register('nomineeName')} error={errors.nomineeName?.message} />
-          <Select label="Nominee Relation" {...register('nomineeRelation')} options={['Spouse', 'Child', 'Father', 'Mother'].map(r => ({ value: r, label: r }))} error={errors.nomineeRelation?.message} />
+        {watch('isOptedIn') === false && (
+          <div className="space-y-4 pt-4 border-t border-gray-200">
+            <Input label="Reason for Opting Out" {...register('optOutReason')} error={errors.optOutReason?.message} />
+            <div className="bg-blue-50 p-4 rounded-md">
+              <h4 className="font-semibold text-blue-900 mb-2">Alternate Insurance Details (Optional)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Insurance Provider" {...register('alternateInsuranceProvider')} />
+                <Input label="Policy Start Date" type="date" {...register('alternateInsuranceStartDate')} />
+                <Input label="Policy End Date" type="date" {...register('alternateInsuranceEndDate')} />
+                <Input label="Coverage Amount" {...register('alternateInsuranceCoverage')} />
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <input type="checkbox" {...register('declarationAccepted')} className="mt-1 h-4 w-4 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500" />
+              <span className="text-sm text-gray-600">I hereby declare that I have existing medical insurance coverage/do not wish to avail the company provided GMC facility.</span>
+            </div>
+          </div>
+        )}
 
-          {/* Additional fields related to dependents, alternate insurance, etc., can be added here */}
+        {watch('isOptedIn') === true && (
+          <div className="space-y-4 pt-4 border-t border-gray-200">
+            <div className="bg-green-50 p-4 rounded-md">
+              <p className="text-green-800">
+                Based on your marital status ({maritalStatus}), you are eligible for a default cover of <strong>{marriedPolicyText}</strong>.
+              </p>
+            </div>
 
-          <button type="submit">Next</button>
-        </>
+            <Input label="Nominee Name" {...register('nomineeName')} error={errors.nomineeName?.message} />
+            <Select
+              label="Nominee Relationship"
+              options={[
+                { value: 'Spouse', label: 'Spouse' },
+                { value: 'Child', label: 'Child' },
+                { value: 'Father', label: 'Father' },
+                { value: 'Mother', label: 'Mother' },
+              ]}
+              {...register('nomineeRelation')}
+              error={errors.nomineeRelation?.message}
+            />
+          </div>
+        )}
+      </div>
+
+      {!hideSubmit && (
+        <div className="pt-6">
+          <button
+            type="submit"
+            className="w-full px-5 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors"
+          >
+            Next
+          </button>
+        </div>
       )}
     </form>
   );
-};
+});
 
 export default GMCDetailsForm;

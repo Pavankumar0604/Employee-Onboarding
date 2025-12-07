@@ -55,18 +55,18 @@ const EntityForm: React.FC<EntityFormProps> = ({ isOpen, onClose, onSave, initia
 
   useEffect(() => {
     if (isOpen) {
-        setIsLoading(true);
-        Promise.all([api.getPolicies(), api.getInsurances()]).then(([p, i]) => {
-            setPolicies(p);
-            setInsurances(i);
-            setIsLoading(false);
-        });
+      setIsLoading(true);
+      Promise.all([api.getPolicies(), api.getInsurances()]).then(([p, i]) => {
+        setPolicies(p);
+        setInsurances(i);
+        setIsLoading(false);
+      });
 
-        if (initialData) {
-            reset(initialData);
-        } else {
-            reset({ id: `new_${Date.now()}`, name: '', location: '', registeredAddress: '', registrationType: '', registrationNumber: '', gstNumber: '', panNumber: '', email: '', eShramNumber: '', shopAndEstablishmentCode: '', epfoCode: '', esicCode: '', psaraLicenseNumber: '', psaraValidTill: '', insuranceIds: [], policyIds: [] } as Entity);
-        }
+      if (initialData) {
+        reset(initialData);
+      } else {
+        reset({ id: `new_${Date.now()}`, name: '', location: '', registeredAddress: '', registrationType: '', registrationNumber: '', gstNumber: '', panNumber: '', email: '', eShramNumber: '', shopAndEstablishmentCode: '', epfoCode: '', esicCode: '', psaraLicenseNumber: '', psaraValidTill: '', insuranceIds: [], policyIds: [] } as Entity);
+      }
     }
   }, [initialData, reset, isOpen]);
 
@@ -87,117 +87,136 @@ const EntityForm: React.FC<EntityFormProps> = ({ isOpen, onClose, onSave, initia
   );
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 p-4" onClick={onClose}>
-      <div className="bg-card rounded-xl shadow-card p-6 w-full max-w-3xl my-8 mx-auto animate-fade-in-scale" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 overflow-y-auto" onClick={onClose}>
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl my-8" onClick={e => e.stopPropagation()}>
+        {/* Simple Header */}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h3 className="text-xl font-semibold text-gray-800">
+            {isEditing ? 'Edit Client' : 'Add New Client'}
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">for {companyName}</p>
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
-            <h3 className="text-xl font-bold text-primary-text">{isEditing ? 'Edit Client' : 'Add New Client'}</h3>
-            <p className="text-sm text-muted">for {companyName}</p>
-          </div>
-          
-          <div className="border-b border-border mb-6">
+          {/* Tabs */}
+          <div className="px-6 pt-4 border-b border-gray-200">
             <nav className="-mb-px flex space-x-4">
-                <TabButton tabName="General" />
-                <TabButton tabName="Registration" />
-                <TabButton tabName="Compliance" />
-                <TabButton tabName="Policies & Insurance" />
+              <TabButton tabName="General" />
+              <TabButton tabName="Registration" />
+              <TabButton tabName="Compliance" />
+              <TabButton tabName="Policies & Insurance" />
             </nav>
           </div>
-          
-          <div className="space-y-6 min-h-[300px]">
+
+          {/* Form Content */}
+          <div className="px-6 py-6 min-h-[300px]">
             {activeTab === 'General' && (
-                <div className="space-y-4">
-                    <Input label="Client Name (as per document)" id="name" registration={register('name')} error={errors.name?.message} />
-                    <Input label="Location / City" id="location" registration={register('location')} error={errors.location?.message} />
-                    <Input label="Registered Address" id="registeredAddress" registration={register('registeredAddress')} error={errors.registeredAddress?.message} />
-                </div>
+              <div className="space-y-4">
+                <Input label="Client Name (as per document)" id="name" registration={register('name')} error={errors.name?.message} />
+                <Input label="Location / City" id="location" registration={register('location')} error={errors.location?.message} />
+                <Input label="Registered Address" id="registeredAddress" registration={register('registeredAddress')} error={errors.registeredAddress?.message} />
+              </div>
             )}
             {activeTab === 'Registration' && (
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                    <Select label="Registration Type" id="registrationType" registration={register('registrationType')} error={errors.registrationType?.message}>
-                        <option value="">Select Type</option><option value="CIN">CIN</option><option value="ROC">ROC</option><option value="ROF">ROF</option><option value="Society">Society</option><option value="Trust">Trust</option>
-                    </Select>
-                    <Input label="Registration Number" id="registrationNumber" registration={register('registrationNumber')} error={errors.registrationNumber?.message} />
-                    <Input label="GST Number" id="gstNumber" registration={register('gstNumber')} error={errors.gstNumber?.message} />
-                    <Input label="PAN Number" id="panNumber" registration={register('panNumber')} error={errors.panNumber?.message} />
-                    <Input label="Email Address" id="email" type="email" registration={register('email')} error={errors.email?.message} />
-                 </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <Select label="Registration Type" id="registrationType" registration={register('registrationType')} error={errors.registrationType?.message}>
+                  <option value="">Select Type</option><option value="CIN">CIN</option><option value="ROC">ROC</option><option value="ROF">ROF</option><option value="Society">Society</option><option value="Trust">Trust</option>
+                </Select>
+                <Input label="Registration Number" id="registrationNumber" registration={register('registrationNumber')} error={errors.registrationNumber?.message} />
+                <Input label="GST Number" id="gstNumber" registration={register('gstNumber')} error={errors.gstNumber?.message} />
+                <Input label="PAN Number" id="panNumber" registration={register('panNumber')} error={errors.panNumber?.message} />
+                <Input label="Email Address" id="email" type="email" registration={register('email')} error={errors.email?.message} />
+              </div>
             )}
             {activeTab === 'Compliance' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                    <Input label="E-Shram Number" id="eShramNumber" registration={register('eShramNumber')} error={errors.eShramNumber?.message} />
-                    <Input label="Shop & Establishment Code" id="shopAndEstablishmentCode" registration={register('shopAndEstablishmentCode')} error={errors.shopAndEstablishmentCode?.message} />
-                    <Input label="EPFO Code" id="epfoCode" registration={register('epfoCode')} error={errors.epfoCode?.message} />
-                    <Input label="ESIC Code" id="esicCode" registration={register('esicCode')} error={errors.esicCode?.message} />
-                    <Input label="PSARA License Number" id="psaraLicenseNumber" registration={register('psaraLicenseNumber')} error={errors.psaraLicenseNumber?.message} />
-                    <Controller name="psaraValidTill" control={control} render={({ field }) => (
-                        <DatePicker label="PSARA Valid Till" id="psaraValidTill" value={field.value} onChange={field.onChange} error={errors.psaraValidTill?.message} />
-                    )} />
-                 </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <Input label="E-Shram Number" id="eShramNumber" registration={register('eShramNumber')} error={errors.eShramNumber?.message} />
+                <Input label="Shop & Establishment Code" id="shopAndEstablishmentCode" registration={register('shopAndEstablishmentCode')} error={errors.shopAndEstablishmentCode?.message} />
+                <Input label="EPFO Code" id="epfoCode" registration={register('epfoCode')} error={errors.epfoCode?.message} />
+                <Input label="ESIC Code" id="esicCode" registration={register('esicCode')} error={errors.esicCode?.message} />
+                <Input label="PSARA License Number" id="psaraLicenseNumber" registration={register('psaraLicenseNumber')} error={errors.psaraLicenseNumber?.message} />
+                <Controller name="psaraValidTill" control={control} render={({ field }) => (
+                  <DatePicker label="PSARA Valid Till" id="psaraValidTill" value={field.value} onChange={field.onChange} error={errors.psaraValidTill?.message} />
+                )} />
+              </div>
             )}
             {activeTab === 'Policies & Insurance' && (
-                isLoading ? <Loader2 className="mx-auto h-6 w-6 animate-spin text-muted" /> :
+              isLoading ? <Loader2 className="mx-auto h-6 w-6 animate-spin text-gray-400" /> :
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <Controller
-                      name="policyIds"
-                      control={control}
-                      render={({ field }) => (
-                        <div>
-                          <h4 className="font-semibold mb-2">Policies</h4>
-                          <div className="space-y-2 max-h-48 overflow-y-auto p-3 border rounded-lg bg-page">
-                            {policies.map(policy => (
-                              <label key={policy.id} className="flex items-center p-2 rounded-md hover:bg-card transition-colors">
-                                <input
-                                  type="checkbox"
-                                  className="h-4 w-4 text-accent border-gray-300 rounded focus:ring-accent"
-                                  checked={field.value?.includes(policy.id)}
-                                  onChange={e => {
-                                    const newValues = e.target.checked
-                                      ? [...(field.value || []), policy.id]
-                                      : ((field.value as string[]) || []).filter((id: string) => id !== policy.id);
-                                    field.onChange(newValues);
-                                  }}
-                                />
-                                <span className="ml-3 text-sm">{policy.name}</span>
-                              </label>
-                            ))}
-                          </div>
+                  <Controller
+                    name="policyIds"
+                    control={control}
+                    render={({ field }) => (
+                      <div>
+                        <h4 className="font-semibold mb-2">Policies</h4>
+                        <div className="space-y-2 max-h-48 overflow-y-auto p-3 border rounded-lg bg-gray-50">
+                          {policies.map(policy => (
+                            <label key={policy.id} className="flex items-center p-2 rounded-md hover:bg-white transition-colors">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+                                checked={field.value?.includes(policy.id)}
+                                onChange={e => {
+                                  const newValues = e.target.checked
+                                    ? [...(field.value || []), policy.id]
+                                    : ((field.value as string[]) || []).filter((id: string) => id !== policy.id);
+                                  field.onChange(newValues);
+                                }}
+                              />
+                              <span className="ml-3 text-sm">{policy.name}</span>
+                            </label>
+                          ))}
                         </div>
-                      )}
-                    />
-                     <Controller
-                      name="insuranceIds"
-                      control={control}
-                      render={({ field }) => (
-                        <div>
-                          <h4 className="font-semibold mb-2">Insurance</h4>
-                           <div className="space-y-2 max-h-48 overflow-y-auto p-3 border rounded-lg bg-page">
-                            {insurances.map(ins => (
-                              <label key={ins.id} className="flex items-center p-2 rounded-md hover:bg-card transition-colors">
-                                <input
-                                  type="checkbox"
-                                   className="h-4 w-4 text-accent border-gray-300 rounded focus:ring-accent"
-                                  checked={field.value?.includes(ins.id)}
-                                  onChange={e => {
-                                    const newValues = e.target.checked
-                                      ? [...(field.value || []), ins.id]
-                                      : ((field.value as string[]) || []).filter((id: string) => id !== ins.id);
-                                    field.onChange(newValues);
-                                  }}
-                                />
-                                <span className="ml-3 text-sm">{ins.type} - {ins.provider}</span>
-                              </label>
-                            ))}
-                          </div>
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="insuranceIds"
+                    control={control}
+                    render={({ field }) => (
+                      <div>
+                        <h4 className="font-semibold mb-2">Insurance</h4>
+                        <div className="space-y-2 max-h-48 overflow-y-auto p-3 border rounded-lg bg-gray-50">
+                          {insurances.map(ins => (
+                            <label key={ins.id} className="flex items-center p-2 rounded-md hover:bg-white transition-colors">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+                                checked={field.value?.includes(ins.id)}
+                                onChange={e => {
+                                  const newValues = e.target.checked
+                                    ? [...(field.value || []), ins.id]
+                                    : ((field.value as string[]) || []).filter((id: string) => id !== ins.id);
+                                  field.onChange(newValues);
+                                }}
+                              />
+                              <span className="ml-3 text-sm">{ins.type} - {ins.provider}</span>
+                            </label>
+                          ))}
                         </div>
-                      )}
-                    />
+                      </div>
+                    )}
+                  />
                 </div>
             )}
           </div>
-          <div className="mt-8 pt-6 border-t border-border flex justify-end space-x-3">
-            <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
-            <Button type="submit">{isEditing ? 'Save Changes' : 'Add Client'}</Button>
+
+          {/* Action Buttons */}
+          <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="secondary"
+              className="px-5 py-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="px-5 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors"
+            >
+              {isEditing ? 'Save Changes' : 'Add Client'}
+            </Button>
           </div>
         </form>
       </div>

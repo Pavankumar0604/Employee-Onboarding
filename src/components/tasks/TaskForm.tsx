@@ -114,73 +114,93 @@ const TaskForm: React.FC<TaskFormProps> = ({ isOpen, onClose, initialData, setTo
 
   if (!isOpen) return null;
 
-  return ( // FIX 1: Add return statement and wrap JSX
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <h3 className="text-lg font-bold text-gray-800 mb-4">{isEditing ? 'Edit' : 'Add'} Task</h3>
-          <div className="space-y-4">
-            <Input placeholder="Task Name" id="name" {...register('name')} error={errors.name?.message} />
-            <div>
-              <textarea
-                placeholder="Description"
-                id="description"
-                rows={3}
-                {...register('description')}
-                className="mt-1 bg-gray-50 border border-gray-300 rounded-md px-3 py-2.5 w-full sm:text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Controller
-                name="dueDate"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker placeholder="Select date" id="dueDate" value={field.value || undefined} onChange={field.onChange} />
-                )}
-              />
-              <Select id="priority" {...register('priority')} error={errors.priority?.message}>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-              </Select>
-            </div>
-            <Select id="assignedToId" {...register('assignedToId')} error={errors.assignedToId?.message}>
-              <option value="">Select User</option>
-              {users.map(user => (
-                <option key={user.id} value={user.id}>{user.name} ({user.role.replace(/_/g, ' ')})</option>
-              ))}
-            </Select>
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 overflow-y-auto" onClick={onClose}>
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl my-8" onClick={e => e.stopPropagation()}>
+        {/* Simple Header */}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h3 className="text-xl font-semibold text-gray-800">
+            {isEditing ? 'Edit Task' : 'Add Task'}
+          </h3>
+        </div>
 
-            <div className="pt-4 border-t">
-              <h4 className="text-md font-semibold text-gray-800 mb-2">Escalation Matrix (Optional)</h4>
-              <p className="text-sm text-gray-500 mb-4">Define who gets notified if this task becomes overdue and set the time gaps for each escalation.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Select id="escalationLevel1UserId" {...register('escalationLevel1UserId')} error={errors.escalationLevel1UserId?.message}>
-                  <option value="">Select User</option>
-                  {users.filter(u => u.role.includes('manager') || u.role === 'admin').map(user => (<option key={user.id} value={user.id}>{user.name}</option>))}
-                </Select>
-                {watchEscalationL1User && (
-                  <Input placeholder="Days until L1 Escalation" id="escalationLevel1DurationDays" type="number" {...register('escalationLevel1DurationDays')} error={errors.escalationLevel1DurationDays?.message} />
-                )}
-                <Select id="escalationLevel2UserId" {...register('escalationLevel2UserId')} error={errors.escalationLevel2UserId?.message}>
-                  <option value="">Select User</option>
-                  {users.filter(u => u.role.includes('manager') || u.role === 'admin').map(user => (<option key={user.id} value={user.id}>{user.name}</option>))}
-                </Select>
-                {watchEscalationL2User && (
-                  <Input placeholder="Days until L2 Escalation" id="escalationLevel2DurationDays" type="number" {...register('escalationLevel2DurationDays')} error={errors.escalationLevel2DurationDays?.message} />
-                )}
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                <Input placeholder="Final Escalation Email" id="escalationEmail" type="email" {...register('escalationEmail')} error={errors.escalationEmail?.message} />
-                {watchEscalationEmail && (
-                  <Input placeholder="Days until Final Escalation" id="escalationEmailDurationDays" type="number" {...register('escalationEmailDurationDays')} error={errors.escalationEmailDurationDays?.message} />
-                )}
-              </div>
+        {/* Form Content */}
+        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-6 space-y-4">
+          <Input placeholder="Task Name" id="name" {...register('name')} error={errors.name?.message} />
+          <div>
+            <textarea
+              placeholder="Description"
+              id="description"
+              rows={3}
+              {...register('description')}
+              className="mt-1 bg-gray-50 border border-gray-300 rounded-md px-3 py-2.5 w-full sm:text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Controller
+              name="dueDate"
+              control={control}
+              render={({ field }) => (
+                <DatePicker placeholder="Select date" id="dueDate" value={field.value || undefined} onChange={field.onChange} />
+              )}
+            />
+            <Select id="priority" {...register('priority')} error={errors.priority?.message}>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+              <option value="High">High</option>
+            </Select>
+          </div>
+          <Select id="assignedToId" {...register('assignedToId')} error={errors.assignedToId?.message}>
+            <option value="">Select User</option>
+            {users.map(user => (
+              <option key={user.id} value={user.id}>{user.name} ({user.role.replace(/_/g, ' ')})</option>
+            ))}
+          </Select>
+
+          <div className="pt-4 border-t">
+            <h4 className="text-md font-semibold text-gray-800 mb-2">Escalation Matrix (Optional)</h4>
+            <p className="text-sm text-gray-500 mb-4">Define who gets notified if this task becomes overdue and set the time gaps for each escalation.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Select id="escalationLevel1UserId" {...register('escalationLevel1UserId')} error={errors.escalationLevel1UserId?.message}>
+                <option value="">Select User</option>
+                {users.filter(u => u.role.includes('manager') || u.role === 'admin').map(user => (<option key={user.id} value={user.id}>{user.name}</option>))}
+              </Select>
+              {watchEscalationL1User && (
+                <Input placeholder="Days until L1 Escalation" id="escalationLevel1DurationDays" type="number" {...register('escalationLevel1DurationDays')} error={errors.escalationLevel1DurationDays?.message} />
+              )}
+              <Select id="escalationLevel2UserId" {...register('escalationLevel2UserId')} error={errors.escalationLevel2UserId?.message}>
+                <option value="">Select User</option>
+                {users.filter(u => u.role.includes('manager') || u.role === 'admin').map(user => (<option key={user.id} value={user.id}>{user.name}</option>))}
+              </Select>
+              {watchEscalationL2User && (
+                <Input placeholder="Days until L2 Escalation" id="escalationLevel2DurationDays" type="number" {...register('escalationLevel2DurationDays')} error={errors.escalationLevel2DurationDays?.message} />
+              )}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <Input placeholder="Final Escalation Email" id="escalationEmail" type="email" {...register('escalationEmail')} error={errors.escalationEmail?.message} />
+              {watchEscalationEmail && (
+                <Input placeholder="Days until Final Escalation" id="escalationEmailDurationDays" type="number" {...register('escalationEmailDurationDays')} error={errors.escalationEmailDurationDays?.message} />
+              )}
             </div>
           </div>
-          <div className="mt-6 flex justify-end space-x-3">
-            <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
-            <Button type="submit" loading={isSaving}>{isEditing ? 'Update Task' : 'Create Task'}</Button>
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="secondary"
+              className="px-5 py-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              loading={isSaving}
+              className="px-5 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors"
+            >
+              {isEditing ? 'Update Task' : 'Create Task'}
+            </Button>
           </div>
         </form>
       </div>

@@ -20,10 +20,10 @@ const SlideToConfirm: React.FC<SlideToConfirmProps> = ({
   variant = 'primary',
 }) => {
   const baseColors = {
-    primary: { bg: 'bg-sky-400', fill: 'bg-sky-400', handle: 'text-sky-400', confirmedFill: 'bg-gradient-to-r from-green-400 to-blue-500' },
-    success: { bg: 'bg-green-700/70', fill: 'bg-green-500', handle: 'text-green-500', confirmedFill: 'bg-gradient-to-r from-green-400 to-blue-500' },
-    danger: { bg: 'bg-red-700/70', fill: 'bg-red-500', handle: 'text-red-500', confirmedFill: 'bg-gradient-to-r from-green-400 to-blue-500' },
-    checkout: { bg: 'bg-red-700/70', fill: 'bg-red-500', handle: 'text-red-500', confirmedFill: 'bg-gradient-to-r from-red-600 to-red-800' },
+    primary: { bg: 'bg-sky-400', fill: 'bg-sky-500', handle: 'text-sky-500', text: 'text-white', confirmedFill: 'bg-gradient-to-r from-green-400 to-blue-500' },
+    success: { bg: 'bg-green-500', fill: 'bg-green-600', handle: 'text-green-600', text: 'text-white', confirmedFill: 'bg-gradient-to-r from-green-400 to-blue-500' },
+    danger: { bg: 'bg-red-500', fill: 'bg-red-600', handle: 'text-red-600', text: 'text-white', confirmedFill: 'bg-gradient-to-r from-green-400 to-blue-500' },
+    checkout: { bg: 'bg-red-500', fill: 'bg-red-600', handle: 'text-red-600', text: 'text-white', confirmedFill: 'bg-gradient-to-r from-red-600 to-red-800' },
   };
 
   const colors = baseColors[variant];
@@ -181,7 +181,7 @@ const SlideToConfirm: React.FC<SlideToConfirmProps> = ({
         )}
       </div>
       <span
-        className={`absolute w-full text-center text-sm font-medium transition-opacity duration-300 pointer-events-none ${isConfirmed ? 'text-white opacity-0' : 'text-white opacity-100'
+        className={`absolute w-full text-center text-sm font-medium transition-opacity duration-300 pointer-events-none ${isConfirmed ? 'text-white opacity-0' : `${colors.text} opacity-100`
           }`}
       >
         {text}

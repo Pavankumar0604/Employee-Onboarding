@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { useOnboardingStore } from '../../store/onboardingStore';
 import Button from '../ui/Button';
 
@@ -9,7 +9,15 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null }> = 
   </div>
 );
 
-const ReviewSubmit: React.FC = () => {
+interface ReviewSubmitProps {
+  hideSubmit?: boolean;
+}
+
+export interface ReviewSubmitHandle {
+  submit: () => void;
+}
+
+const ReviewSubmit = forwardRef<ReviewSubmitHandle, ReviewSubmitProps>(({ hideSubmit }, ref) => {
   const personal = useOnboardingStore(state => state.personal);
   const address = useOnboardingStore(state => state.address);
   const family = useOnboardingStore(state => state.family);
@@ -20,9 +28,15 @@ const ReviewSubmit: React.FC = () => {
     alert('Onboarding submitted successfully!');
   };
 
+  useImperativeHandle(ref, () => ({
+    submit: () => {
+      handleSubmit();
+    }
+  }));
+
   return (
     <div>
-      
+
       <section>
         <h3>Personal Details</h3>
         <DetailItem label="Employee ID" value={personal.employeeId} />
@@ -51,15 +65,17 @@ const ReviewSubmit: React.FC = () => {
 
       {/* Repeat sections for Education, Bank, UAN, ESI, GMC as needed */}
 
-      <div className="mt-4">
-        <Button onClick={handleSubmit}>Submit Onboarding</Button>
-      </div>
+      {!hideSubmit && (
+        <div className="mt-4">
+          <Button onClick={handleSubmit}>Submit Onboarding</Button>
+        </div>
+      )}
 
       <p className="mt-4 text-xs italic">
         I hereby declare that the information provided is true and correct to the best of my knowledge.
       </p>
     </div>
   );
-};
+});
 
 export default ReviewSubmit;

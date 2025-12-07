@@ -1,0 +1,423 @@
+/* ========================================================================== */
+/* === COMPLETE DARK MODE - SIDEBAR + CONTENT PANEL ========================= */
+/* ========================================================================== */
+
+/* ============ FORCE ALL WHITE ELEMENTS TO DARK ============ */
+
+/* Dark mode - Body and HTML backgrounds */
+.dark,
+.dark body,
+.dark html {
+    background-color: #0f172a !important;
+}
+
+/* Dark mode - Main layout container */
+.dark .layout-appLayout,
+.dark [class*="layout"],
+.dark main,
+.dark #root {
+    background-color: #0f172a !important;
+}
+
+/* Target all possible white background classes */
+.dark [class*="bg-white"],
+.dark .bg-white,
+.dark [style*="background-color: white"],
+.dark [style*="background-color: rgb(255, 255, 255)"],
+.dark [style*="background: white"],
+.dark [style*="background: #fff"],
+.dark [style*="background-color: #fff"] {
+    background-color: #2d3748 !important;
+    background: #2d3748 !important;
+    border: 1px solid #475569 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* All gray backgrounds */
+.dark [class*="bg-gray-50"],
+.dark .bg-gray-50 {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+.dark [class*="bg-gray-100"],
+.dark .bg-gray-100 {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+}
+
+/* Dark mode - Enrollment page specific fixes */
+.dark [class*="min-h-screen"],
+.dark .min-h-screen {
+    background-color: transparent !important;
+}
+
+.dark [class*="flex"][class*="items-center"][class*="justify-center"] {
+    background-color: transparent !important;
+}
+
+/* Dark mode - Center containers with proper background */
+.dark [class*="max-w-"],
+.dark [class*="mx-auto"] {
+    background-color: transparent !important;
+}
+
+/* Dark mode - Specific enrollment card styling */
+.dark [class*="rounded-lg"][class*="shadow"],
+.dark [class*="rounded-xl"][class*="shadow"] {
+    background-color: #1e293b !important;
+    border: 1px solid #475569 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+}
+
+
+/* ============ TEXT COLORS ============ */
+
+/* Headings - Bright and clear */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark [class*="text-gray-800"],
+.dark [class*="text-gray-900"],
+.dark .text-gray-800,
+.dark .text-gray-900 {
+    color: #f1f5f9 !important;
+}
+
+/* Body text - Easy to read */
+.dark p,
+.dark span:not([class*="text-cyan"]):not([class*="text-green"]):not([class*="text-red"]):not([class*="text-blue"]),
+.dark label,
+.dark li,
+.dark div:not([class*="bg-"]):not([class*="text-cyan"]):not([class*="text-green"]) {
+    color: #cbd5e1 !important;
+}
+
+.dark [class*="text-gray-600"],
+.dark [class*="text-gray-700"],
+.dark .text-gray-600,
+.dark .text-gray-700 {
+    color: #94a3b8 !important;
+}
+
+.dark [class*="text-gray-500"],
+.dark .text-gray-500 {
+    color: #64748b !important;
+}
+
+/* ============ INPUT FIELDS - PREMIUM DARK ============ */
+
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="number"],
+.dark input[type="date"],
+.dark input[type="tel"],
+.dark input[type="search"],
+.dark input[type="time"],
+.dark input[type="url"],
+.dark select,
+.dark textarea {
+    background-color: #0f172a !important;
+    background: linear-gradient(145deg, #0f172a, #1e293b) !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+    transition: all 0.2s ease;
+}
+
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+    background-color: #0f172a !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2),
+        0 4px 12px rgba(16, 185, 129, 0.1) !important;
+    outline: none;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #64748b !important;
+}
+
+/* ============ BUTTONS - DARK THEME ============ */
+
+.dark button:not([class*="bg-cyan"]):not([class*="bg-green"]):not([class*="bg-blue"]):not([class*="bg-red"]):not([class*="bg-emerald"]) {
+    background: linear-gradient(145deg, #334155, #475569) !important;
+    color: #f1f5f9 !important;
+    border-color: #64748b !important;
+    transition: all 0.2s ease;
+}
+
+.dark button:not([class*="bg-cyan"]):not([class*="bg-green"]):not([class*="bg-blue"]):not([class*="bg-red"]):not([class*="bg-emerald"]):hover {
+    background: #0ea5e9 !important;
+    color: #ffffff !important;
+    border-color: #0ea5e9 !important;
+    transform: translateY(-1px);
+}
+
+/* ============ TABLES - BEAUTIFUL DARK THEME ============ */
+
+.dark table {
+    border-color: #334155 !important;
+    background-color: transparent !important;
+}
+
+.dark thead {
+    background: linear-gradient(145deg, #1e293b, #334155) !important;
+    border-bottom: 2px solid #475569 !important;
+}
+
+.dark thead th {
+    color: #e2e8f0 !important;
+    border-color: #475569 !important;
+    font-weight: 600 !important;
+    background-color: transparent !important;
+}
+
+.dark tbody {
+    background-color: transparent !important;
+}
+
+.dark tbody tr {
+    border-color: #334155 !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease;
+}
+
+.dark tbody tr:nth-child(even) {
+    background: rgba(30, 41, 59, 0.3) !important;
+}
+
+.dark tbody tr:hover {
+    background: rgba(51, 65, 85, 0.6) !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+}
+
+.dark tbody td {
+    color: #cbd5e1 !important;
+    border-color: #334155 !important;
+}
+
+/* ============ CARDS & PANELS - PREMIUM STYLING ============ */
+
+.dark [class*="card"],
+.dark [class*="panel"],
+.dark .card,
+.dark .panel {
+    background: linear-gradient(145deg, #1e293b 0%, #334155 100%) !important;
+    border: 1px solid #475569 !important;
+    color: #e2e8f0 !important;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(148, 163, 184, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.dark [class*="card"]:hover,
+.dark [class*="panel"]:hover,
+.dark .card:hover,
+.dark .panel:hover {
+    border-color: #64748b !important;
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.7),
+        0 0 20px rgba(16, 185, 129, 0.1),
+        inset 0 1px 0 rgba(148, 163, 184, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+/* ============ BORDERS ============ */
+
+.dark [class*="border-gray"],
+.dark .border,
+.dark hr {
+    border-color: #334155 !important;
+}
+
+.dark [class*="border-gray-300"],
+.dark .border-gray-300 {
+    border-color: #475569 !important;
+}
+
+.dark [class*="border-gray-200"],
+.dark .border-gray-200 {
+    border-color: #334155 !important;
+}
+
+/* ============ MODALS & DIALOGS ============ */
+
+.dark [role="dialog"],
+.dark [class*="modal"],
+.dark .modal {
+    background: linear-gradient(145deg, #1e293b 0%, #334155 100%) !important;
+    border: 1px solid #475569 !important;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.9),
+        inset 0 1px 0 rgba(148, 163, 184, 0.1) !important;
+}
+
+/* ============ DROPDOWN MENUS ============ */
+
+.dark [role="menu"],
+.dark .dropdown-menu,
+.dark [class*="dropdown"] {
+    background: linear-gradient(145deg, #1e293b, #334155) !important;
+    border: 1px solid #475569 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark [role="menuitem"]:hover,
+.dark .dropdown-item:hover {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: #10b981 !important;
+}
+
+/* ============ TABS ============ */
+
+.dark [role="tab"],
+.dark .tab {
+    color: #94a3b8 !important;
+    border-color: #334155 !important;
+}
+
+.dark [role="tab"][aria-selected="true"],
+.dark .tab-active,
+.dark .tab.active {
+    color: #10b981 !important;
+    border-color: #10b981 !important;
+    background: rgba(16, 185, 129, 0.1) !important;
+}
+
+/* ============ BADGES & TAGS ============ */
+
+.dark .badge,
+.dark .tag,
+.dark [class*="badge"],
+.dark [class*="tag"] {
+    background: linear-gradient(145deg, #334155, #475569) !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #64748b !important;
+}
+
+/* ============ STATUS COLORS - KEEP VIBRANT ============ */
+
+.dark [class*="success"],
+.dark .text-green-600 {
+    color: #10b981 !important;
+}
+
+.dark [class*="warning"],
+.dark .text-yellow-600 {
+    color: #f59e0b !important;
+}
+
+.dark [class*="error"],
+.dark [class*="danger"],
+.dark .text-red-600 {
+    color: #ef4444 !important;
+}
+
+.dark [class*="info"],
+.dark .text-blue-600 {
+    color: #3b82f6 !important;
+}
+
+/* ============ LINKS ============ */
+
+.dark a:not([class*="text-"]):not([class*="bg-"]) {
+    color: #60a5fa !important;
+}
+
+.dark a:not([class*="text-"]):not([class*="bg-"]):hover {
+    color: #93c5fd !important;
+}
+
+/* ============ SEARCH BARS ============ */
+
+.dark [type="search"] {
+    background: linear-gradient(145deg, #0f172a, #1e293b) !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+}
+
+/* ============ SCROLLBARS ============ */
+
+.dark ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* ============ ULTRA-AGGRESSIVE WHITE PANEL FIX ============ */
+
+/* Force large white sections/divs to dark - cleaner color with visible borders */
+.dark div[class*="bg-white"],
+.dark div.bg-white,
+.dark section[class*="bg-white"],
+.dark section.bg-white {
+    background-color: #2d3748 !important;
+    background: #2d3748 !important;
+    border: 1px solid #64748b !important;
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(100, 116, 139, 0.3) !important;
+}
+
+/* Target rounded containers */
+.dark div[class*="rounded"][class*="bg-white"],
+.dark div.rounded-lg.bg-white,
+.dark section[class*="rounded"] {
+    background-color: #2d3748 !important;
+    border: 1px solid #64748b !important;
+}
+
+/* Any div with padding and white background */
+.dark div[class*="p-"][class*="bg-white"],
+.dark div[class*="px-"][class*="bg-white"],
+.dark div[class*="py-"][class*="bg-white"] {
+    background-color: #2d3748 !important;
+    border: 1px solid #64748b !important;
+}
+
+/* Target shadow + white combos */
+.dark [class*="shadow"][class*="bg-white"],
+.dark .shadow.bg-white,
+.dark .shadow-lg.bg-white {
+    background-color: #2d3748 !important;
+    border: 1px solid #64748b !important;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(100, 116, 139, 0.4) !important;
+}
+
+/* Change remaining light text to dark on these panels */
+.dark div[class*="bg-white"] h1,
+.dark div[class*="bg-white"] h2,
+.dark div[class*="bg-white"] h3,
+.dark section[class*="bg-white"] h1,
+.dark section[class*="bg-white"] h2,
+.dark section[class*="bg-white"] h3 {
+    color: #f1f5f9 !important;
+}
+
+.dark div[class*="bg-white"] p,
+.dark div[class*="bg-white"] span,
+.dark div[class*="bg-white"] label,
+.dark section[class*="bg-white"] p {
+    color: #cbd5e1 !important;
+}

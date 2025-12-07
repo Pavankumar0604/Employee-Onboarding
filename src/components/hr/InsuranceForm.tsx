@@ -7,7 +7,6 @@ import Input from '../ui/Input';
 import Select from '../ui/Select';
 import Button from '../ui/Button';
 import DatePicker from '../ui/DatePicker';
-import { Shield, Building2, FileText, Calendar, X } from 'lucide-react';
 
 const schema = yup.object({
     type: yup.string().oneOf(['GMC', 'GPA', 'WCA', 'Other']).required('Type is required'),
@@ -36,127 +35,101 @@ const InsuranceForm: React.FC<InsuranceFormProps> = ({ onSave, onClose, initialD
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4" onClick={onClose}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 overflow-y-auto" onClick={onClose}>
             <div
-                className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all"
+                className="bg-white rounded-lg shadow-xl w-full max-w-2xl my-8"
                 onClick={e => e.stopPropagation()}
             >
-                {/* Gradient Header */}
-                <div className="bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-5 relative">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
-                                <Shield className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-white">
-                                    {initialData ? 'Edit Insurance' : 'Add Insurance'}
-                                </h3>
-                                <p className="text-sky-100 text-sm mt-0.5">
-                                    {initialData ? 'Update insurance details' : 'Create a new insurance policy'}
-                                </p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={onClose}
-                            className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
-                            aria-label="Close"
-                        >
-                            <X className="h-5 w-5 text-white" />
-                        </button>
-                    </div>
+                {/* Simple Header */}
+                <div className="px-6 py-4 border-b border-gray-200">
+                    <h3 className="text-xl font-semibold text-gray-800">
+                        {initialData ? 'Edit Insurance' : 'Add Insurance'}
+                    </h3>
                 </div>
 
                 {/* Form Content */}
-                <form onSubmit={handleSubmit(onSubmit)} className="p-6">
-                    <div className="space-y-5">
-                        {/* Insurance Type */}
-                        <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                <Shield className="h-4 w-4 text-sky-600" />
-                                Insurance Type
-                            </label>
-                            <Select
-                                id="type"
-                                registration={register('type')}
-                                error={errors.type?.message}
-                                className="w-full"
-                            >
-                                <option>GMC</option>
-                                <option>GPA</option>
-                                <option>WCA</option>
-                                <option>Other</option>
-                            </Select>
-                        </div>
+                <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-6 space-y-4">
+                    {/* Insurance Type */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            Insurance Type
+                        </label>
+                        <Select
+                            id="type"
+                            registration={register('type')}
+                            error={errors.type?.message}
+                            className="w-full"
+                        >
+                            <option>GMC</option>
+                            <option>GPA</option>
+                            <option>WCA</option>
+                            <option>Other</option>
+                        </Select>
+                    </div>
 
-                        {/* Provider */}
-                        <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                <Building2 className="h-4 w-4 text-sky-600" />
-                                Provider
-                            </label>
-                            <Input
-                                id="provider"
-                                registration={register('provider')}
-                                error={errors.provider?.message}
-                                placeholder="Enter insurance provider name"
-                                className="w-full"
-                            />
-                        </div>
+                    {/* Provider */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            Provider
+                        </label>
+                        <Input
+                            id="provider"
+                            registration={register('provider')}
+                            error={errors.provider?.message}
+                            placeholder="Provider Name"
+                            className="w-full"
+                        />
+                    </div>
 
-                        {/* Policy Number */}
-                        <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                <FileText className="h-4 w-4 text-sky-600" />
-                                Policy Number
-                            </label>
-                            <Input
-                                id="policyNumber"
-                                registration={register('policyNumber')}
-                                error={errors.policyNumber?.message}
-                                placeholder="Enter policy number"
-                                className="w-full"
-                            />
-                        </div>
+                    {/* Policy Number */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            Policy Number
+                        </label>
+                        <Input
+                            id="policyNumber"
+                            registration={register('policyNumber')}
+                            error={errors.policyNumber?.message}
+                            placeholder="Policy Number"
+                            className="w-full"
+                        />
+                    </div>
 
-                        {/* Valid Till */}
-                        <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                <Calendar className="h-4 w-4 text-sky-600" />
-                                Valid Till
-                            </label>
-                            <Controller
-                                name="validTill"
-                                control={control}
-                                render={({ field }) => (
-                                    <DatePicker
-                                        id="validTill"
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        error={errors.validTill?.message}
-                                        placeholder="Select expiry date"
-                                        className="w-full"
-                                    />
-                                )}
-                            />
-                        </div>
+                    {/* Valid Till */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            Valid Till
+                        </label>
+                        <Controller
+                            name="validTill"
+                            control={control}
+                            render={({ field }) => (
+                                <DatePicker
+                                    id="validTill"
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={errors.validTill?.message}
+                                    className="w-full"
+                                />
+                            )}
+                        />
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
+                    <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 mt-6">
                         <Button
                             type="button"
                             variant="secondary"
                             onClick={onClose}
-                            className="px-6"
+                            className="px-5 py-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
                         >
                             Cancel
                         </Button>
                         <Button
                             type="submit"
-                            className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white px-6 shadow-lg shadow-sky-500/30 transition-all duration-200"
+                            className="px-5 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors"
                         >
-                            {initialData ? 'Update Insurance' : 'Save Insurance'}
+                            {initialData ? 'Update Insurance' : 'Create Insurance'}
                         </Button>
                     </div>
                 </form>

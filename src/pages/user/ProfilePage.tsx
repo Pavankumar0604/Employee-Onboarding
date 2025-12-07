@@ -288,7 +288,7 @@ const ProfilePage: React.FC = () => {
                             <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Work Hours Tracking</h3>
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className={`text-center p-4 rounded-lg transition-colors duration-300 ${isCheckedIn ? 'bg-green-100 dark:bg-green-900' : 'bg-gray-100 dark:bg-gray-700'}`}>
+                                    <div className={`text-center p-4 rounded-lg transition-colors duration-300 ${isCheckedIn ? 'bg-sky-100 dark:bg-sky-900' : 'bg-gray-100 dark:bg-gray-700'}`}>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">Last Check In</p>
                                         <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatTime(lastCheckInTime)}</p>
                                     </div>
