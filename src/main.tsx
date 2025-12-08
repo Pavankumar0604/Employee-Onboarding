@@ -13,6 +13,7 @@ import { SettingsProvider } from './store/SettingsContext';
 /**
  * @description Configures the TanStack Query client with default options.
  */
+import { SpeedInsights } from "@vercel/speed-insights/react"
 const queryClient = new QueryClient({
   /**
    * @description Default options for all queries.
@@ -33,6 +34,7 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
+    <SpeedInsights />
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ToastProvider>
