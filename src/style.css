@@ -20,12 +20,23 @@ body {
 }
 
 /* Global scrollbar hiding (webkit) - moved from index.css */
-body::-webkit-scrollbar {
+/* Global scrollbar hiding (webkit) - moved from index.css */
+*::-webkit-scrollbar {
   display: none;
 }
 
+* {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
 #root {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Custom styles for scrollbar hiding (retained for existing usage) - moved from index.css */
@@ -51,7 +62,10 @@ body {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+  /* Firefox */
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow: hidden;
+  /* Prevent body scroll */
 }
 
 /* Primary Text: Charcoal Black (#232323) - for main headings and body text */
@@ -339,8 +353,12 @@ a.no-underline:hover {
   display: flex;
   padding: 20px;
   /* Outer padding for the whole layout */
+  /* Outer padding for the whole layout */
   gap: 20px;
-  min-height: 100vh;
+  height: 100vh;
+  /* Fixed height for the layout */
+  overflow: hidden;
+  /* Prevent outer scrolling, rely on internal scrolls */
   background-color: var(--color-bg-platinum);
   /* Soft background layering */
   transition: background-color 0.3s ease;
