@@ -40,6 +40,7 @@ const AttendancePage: FC = () => {
         const fetchHolidays = async () => {
             try {
                 const data = await api.getHolidays();
+                console.log("Fetched holidays data:", data);
                 // Map HolidayRow (from DB) to Holiday (from types/attendance.ts)
                 if (data) {
                     setHolidayList(data.map(row => ({
