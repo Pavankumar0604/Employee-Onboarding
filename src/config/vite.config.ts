@@ -22,6 +22,17 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 2000, // Increase chunk size warning limit to 2000 KB
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['framer-motion', 'lucide-react', 'react-icons', 'styled-components'],
+          state: ['zustand', '@tanstack/react-query'],
+          utils: ['date-fns'],
+          supabase: ['@supabase/supabase-js'],
+        },
+      },
+    },
   },
   optimizeDeps: {
     // Explicitly include common dependencies to speed up cold start
