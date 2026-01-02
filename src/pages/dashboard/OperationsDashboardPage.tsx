@@ -5,6 +5,7 @@ import StatCard from '../../components/dashboard/StatCard';
 import Select from '../../components/ui/Select';
 import Button from '../../components/ui/Button';
 import DatePicker from '../../components/ui/DatePicker';
+import PageHeader from '../../components/layout/PageHeader';
 
 // Mock data for demonstration
 const mockStats = {
@@ -69,111 +70,130 @@ const DateRangePicker: React.FC = () => {
   };
 
   return (
-    <div className="relative inline-block">
+    <>
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-4 py-2 border border-sky-400 text-sky-700 rounded-full bg-white hover:bg-sky-50 transition duration-150"
+        className="flex items-center space-x-2 px-4 py-2.5 border-2 border-sky-400 text-sky-700 dark:text-sky-400 rounded-full bg-white dark:bg-gray-800 hover:bg-sky-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md font-medium relative z-10"
       >
         <Calendar size={18} />
-        <span className="font-medium text-sm">{`${currentRange.start} - ${currentRange.end}`}</span>
+        <span className="text-sm font-semibold">{`${currentRange.start} - ${currentRange.end}`}</span>
       </button>
 
-      {/* Popover Content */}
+      {/* Popover Content - Using Fixed Positioning */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-[600px] bg-white rounded-xl shadow-2xl z-50 border border-gray-200 flex overflow-hidden">
-          
-          {/* Left Panel: Presets */}
-          <div className="w-1/3 border-r border-gray-100 p-4 space-y-1 text-sm">
-            {presets.map((preset) => (
-              <div
-                key={preset.label}
-                onClick={() => handlePresetClick(preset)}
-                className={`p-2 rounded-lg cursor-pointer transition duration-100 ${
-                  currentRange.label === preset.label
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
-                    : 'hover:bg-gray-50 text-gray-700'
-                }`}
-              >
-                {preset.label}
-              </div>
-            ))}
-            
-            {/* Custom Range Options (Simulated) */}
-            <div className="pt-4 space-y-2">
-              <div className="flex items-center space-x-2 text-gray-500">
-                <div className="w-4 h-4 border border-gray-300 rounded-sm"></div>
-                <span>- days up to today</span>
-              </div>
-              <div className="flex items-center space-x-2 text-gray-500">
-                <div className="w-4 h-4 border border-gray-300 rounded-sm"></div>
-                <span>- days starting today</span>
-              </div>
-            </div>
-          </div>
+        <>
+          {/* Backdrop to close on outside click */}
+          <div
+            className="fixed inset-0 z-[100]"
+            onClick={() => setIsOpen(false)}
+          />
 
-          {/* Right Panel: Calendar */}
-          <div className="w-2/3 p-4">
-            
-            {/* Selected Range Display */}
-            <div className="flex justify-between mb-4 space-x-2">
-              <div className="border border-gray-300 rounded-lg p-2 text-center flex-1 font-medium">
-                {currentRange.start}
-              </div>
-              <div className="border border-gray-300 rounded-lg p-2 text-center flex-1 font-medium">
-                {currentRange.end}
-              </div>
-            </div>
+          {/* Popup with fixed positioning - appears on top */}
+          <div className="fixed top-32 right-8 w-[600px] bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 flex overflow-hidden z-[101]">
 
-            {/* Month Navigation */}
-            <div className="flex justify-between items-center mb-4">
-              <ChevronLeft size={20} className="cursor-pointer text-gray-600 hover:text-gray-900" />
-              <div className="flex space-x-4">
-                <span className="font-semibold text-gray-800 flex items-center">
-                  November <ChevronDown size={16} className="ml-1 text-gray-500" />
-                </span>
-                <span className="font-semibold text-gray-800 flex items-center">
-                  2025 <ChevronDown size={16} className="ml-1 text-gray-500" />
-                </span>
-              </div>
-              <ChevronRight size={20} className="cursor-pointer text-gray-600 hover:text-gray-900" />
-            </div>
-
-            <p className="text-sm font-medium text-gray-700 mb-2">Nov 2025</p>
-
-            {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-1 text-center text-sm">
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-gray-500 font-medium">{day}</div>
-              ))}
-              
-              {mockCalendarDays.map((day, index) => (
+            {/* Left Panel: Presets */}
+            <div className="w-1/3 border-r border-gray-100 dark:border-gray-700 p-4 space-y-1 text-sm">
+              {presets.map((preset) => (
                 <div
-                  key={index}
-                  onClick={() => handleCalendarDayClick(day.day)}
-                  className={`p-1 rounded-full cursor-pointer transition duration-100
-                    ${day.isPrevMonth || day.isNextMonth ? 'text-gray-400' : 'text-gray-800'}
-                    ${day.isSelected ? 'bg-blue-500 text-white rounded-full' : 'hover:bg-gray-100'}
-                    ${day.isToday && !day.isSelected ? 'underline font-bold' : ''}
-                  `}
-                  style={{
-                    backgroundColor: day.isSelected ? '#3b82f6' : 'transparent', // blue-500
-                    color: day.isSelected ? 'white' : (day.isPrevMonth || day.isNextMonth ? '#9ca3af' : '#1f2937'), // text-gray-400 or text-gray-800
-                    borderRadius: day.isSelected ? '9999px' : '0',
-                    padding: '4px',
-                    lineHeight: '1.5rem',
-                    fontWeight: day.isToday ? 'bold' : 'normal',
-                    textDecoration: day.isToday && !day.isSelected ? 'underline' : 'none',
-                  }}
+                  key={preset.label}
+                  onClick={() => handlePresetClick(preset)}
+                  className={`p-2.5 rounded-lg cursor-pointer transition-all duration-150 ${currentRange.label === preset.label
+                    ? 'bg-blue-50 text-blue-700 font-semibold shadow-sm'
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium'
+                    }`}
                 >
-                  {day.day}
+                  {preset.label}
                 </div>
               ))}
+
+              {/* Custom Range Options (Simulated) */}
+              <div className="pt-4 space-y-2">
+                <div className="flex items-center space-x-2 text-gray-500 dark:text-gray-400 text-xs">
+                  <div className="w-4 h-4 border border-gray-300 dark:border-gray-600 rounded-sm"></div>
+                  <span>- days up to today</span>
+                </div>
+                <div className="flex items-center space-x-2 text-gray-500 dark:text-gray-400 text-xs">
+                  <div className="w-4 h-4 border border-gray-300 dark:border-gray-600 rounded-sm"></div>
+                  <span>- days starting today</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Panel: Calendar - Redesigned Compact & Attractive */}
+            <div className="w-2/3 p-4">
+
+              {/* Selected Range Display - Compact Gradient Design */}
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex-1 bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-1.5 text-center">
+                  <div className="text-[10px] uppercase tracking-wide font-semibold text-blue-600 dark:text-blue-400 mb-0.5">Start</div>
+                  <div className="text-sm font-bold text-gray-900 dark:text-white">{currentRange.start}</div>
+                </div>
+                <div className="flex-shrink-0 w-6 h-0.5 bg-gradient-to-r from-blue-400 to-sky-400 rounded-full"></div>
+                <div className="flex-1 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 border border-sky-200 dark:border-sky-700 rounded-lg px-3 py-1.5 text-center">
+                  <div className="text-[10px] uppercase tracking-wide font-semibold text-sky-600 dark:text-sky-400 mb-0.5">End</div>
+                  <div className="text-sm font-bold text-gray-900 dark:text-white">{currentRange.end}</div>
+                </div>
+              </div>
+
+              {/* Month Navigation - Compact */}
+              <div className="flex justify-between items-center mb-3 px-1">
+                <button className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                  <ChevronLeft size={18} className="text-gray-600 dark:text-gray-400" />
+                </button>
+                <div className="flex items-center gap-3">
+                  <button className="text-sm font-bold text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1">
+                    November <ChevronDown size={14} className="opacity-60" />
+                  </button>
+                  <button className="text-sm font-bold text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1">
+                    2025 <ChevronDown size={14} className="opacity-60" />
+                  </button>
+                </div>
+                <button className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                  <ChevronRight size={18} className="text-gray-600 dark:text-gray-400" />
+                </button>
+              </div>
+
+              {/* Calendar Grid - Tighter, More Attractive */}
+              <div className="grid grid-cols-7 gap-0.5 text-center">
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, idx) => (
+                  <div key={idx} className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider py-1.5">
+                    {day}
+                  </div>
+                ))}
+
+                {mockCalendarDays.map((day, index) => {
+                  const isSelected = day.isSelected;
+                  const isToday = day.isToday && !day.isSelected;
+                  const isOtherMonth = day.isPrevMonth || day.isNextMonth;
+
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => handleCalendarDayClick(day.day)}
+                      className={`
+                        relative py-1.5 text-xs font-semibold cursor-pointer transition-all duration-150
+                        ${isOtherMonth ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'}
+                        ${isSelected
+                          ? 'bg-gradient-to-br from-blue-500 to-sky-500 text-white shadow-md scale-105 rounded-lg'
+                          : 'hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:scale-105 rounded-lg'
+                        }
+                        ${isToday ? 'ring-2 ring-blue-400 ring-inset rounded-lg' : ''}
+                      `}
+                    >
+                      {day.day}
+                      {isToday && (
+                        <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-500 rounded-full"></div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
-    </div>
+    </>
   );
 };
 
@@ -191,89 +211,87 @@ const OperationsDashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-8">
-      {/* Header Section */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Operations Dashboard</h1>
-        <DateRangePicker />
-      </div>
+    <>
+      <PageHeader
+        title="Operations Dashboard"
+        subtitle="Monitor submissions, track employee verifications, and manage field officer assignments"
+        secondaryActions={<DateRangePicker />}
+      />
 
       {/* Statistics Cards Section */}
-      <div className="flex flex-wrap gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <StatCard
           title="Total Submissions"
           value={mockStats.totalSubmissions}
           Icon={FileText}
           iconColor="text-sky-700"
-          iconBg="bg-sky-100"
+          iconBg="bg-sky-100 dark:bg-sky-900/30"
         />
         <StatCard
           title="Verified Employees"
           value={mockStats.verifiedEmployees}
           Icon={UserCheck}
-          iconColor="text-sky-700"
-          iconBg="bg-sky-100"
+          iconColor="text-emerald-700"
+          iconBg="bg-emerald-100 dark:bg-emerald-900/30"
         />
         <StatCard
           title="Rejected Applications"
           value={mockStats.rejectedApplications}
           Icon={UserX}
-          iconColor="text-sky-700"
-          iconBg="bg-sky-100"
+          iconColor="text-red-700"
+          iconBg="bg-red-100 dark:bg-red-900/30"
         />
       </div>
 
       {/* Assign Field Officer Section */}
-      <div className="bg-white p-6 rounded-xl shadow-md space-y-6">
-        <div className="border-b pb-4 border-gray-100">
-          <h2 className="text-xl font-bold text-gray-900 mb-1">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+        <div className="mb-6">
+          <h3 className="text-heading-s font-semibold text-gray-900 dark:text-white mb-2">
             Assign Field Officer
-          </h2>
-          <div className="w-16 h-0.5 bg-sky-400 mb-2"></div> {/* Skyblue underline */}
-          <p className="text-sm text-gray-500">
+          </h3>
+          <p className="text-body-small text-gray-600 dark:text-gray-400">
             Assign a field officer to an organization for a specific date.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-6 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
           {/* Field Officer Select */}
-          <div className="min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Field Officer</label>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Field Officer</label>
             <Select
               id="fieldOfficer"
               options={mockFieldOfficers}
               value={selectedOfficer}
               onChange={(e) => setSelectedOfficer(e.target.value)}
               placeholder="Select Officer"
-              className="!p-2.5" // Adjust padding to match image
+              className="!p-3"
             >
               <option value="" disabled>Select Officer</option>
             </Select>
           </div>
 
           {/* Organization/Site Select */}
-          <div className="min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Organization/Site</label>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Organization/Site</label>
             <Select
               id="organizationSite"
               options={mockSites}
               value={selectedSite}
               onChange={(e) => setSelectedSite(e.target.value)}
               placeholder="Select Site"
-              className="!p-2.5" // Adjust padding to match image
+              className="!p-3"
             >
               <option value="" disabled>Select Site</option>
             </Select>
           </div>
 
           {/* Assignment Date Picker */}
-          <div className="min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Assignment Date</label>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Assignment Date</label>
             <DatePicker
               id="assignmentDate"
               value={assignmentDate}
               onChange={setAssignmentDate}
-              // The DatePicker component handles the input type="date" functionality
             />
           </div>
 
@@ -283,13 +301,13 @@ const OperationsDashboardPage: React.FC = () => {
             size="md"
             icon={<Send size={18} />}
             onClick={handleAssign}
-            className="h-[42px] px-6 bg-sky-400 hover:bg-sky-500" // Custom height and color to match image
+            className="h-[46px] px-8 bg-sky-400 hover:bg-sky-500 dark:bg-sky-600 dark:hover:bg-sky-700 font-semibold shadow-md hover:shadow-lg transition-all duration-200"
           >
             Assign
           </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

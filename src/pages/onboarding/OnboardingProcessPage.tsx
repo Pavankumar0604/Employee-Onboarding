@@ -99,6 +99,14 @@ const OnboardingProcessPage: React.FC = () => {
     }
   };
 
+  const handleEditStep = (stepName: OnboardingStep) => {
+    const stepIndex = onboardingSteps.indexOf(stepName);
+    if (stepIndex !== -1) {
+      setCurrentStep(stepIndex);
+      navigate(`/onboarding/add/${stepName}`);
+    }
+  };
+
   const renderStepComponent = () => {
     switch (onboardingSteps[currentStep]) {
       case 'personal':
@@ -126,7 +134,7 @@ const OnboardingProcessPage: React.FC = () => {
       case 'biometrics':
         return <div>Biometrics Capture Placeholder</div>;
       case 'review':
-        return <ReviewSubmit ref={formRef} hideSubmit={true} />;
+        return <ReviewSubmit ref={formRef} hideSubmit={true} onEdit={handleEditStep} />;
       default:
         return <div>Step not found</div>;
     }

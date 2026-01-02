@@ -21,21 +21,28 @@ export default defineConfig({
     port: 3000,
   },
   build: {
-    chunkSizeWarningLimit: 2000, // Increase chunk size warning limit to 2000 KB
+    target: 'es2015',
+    minify: 'esbuild', // Use esbuild for faster builds
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
+          // Core React libraries
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['framer-motion', 'lucide-react', 'react-icons', 'styled-components'],
+          // UI libraries
+          ui: ['lucide-react', 'framer-motion'],
+          // State management
           state: ['zustand', '@tanstack/react-query'],
-          utils: ['date-fns'],
+          // Utilities
+          utils: ['date-fns', 'react-hook-form', 'yup'],
+          // Supabase
           supabase: ['@supabase/supabase-js'],
         },
       },
     },
+    chunkSizeWarningLimit: 1000, // Warn for chunks > 1MB
   },
   optimizeDeps: {
-    // Explicitly include common dependencies to speed up cold start
     include: ['react', 'react-dom', 'react-router-dom', 'lucide-react'],
   },
 });

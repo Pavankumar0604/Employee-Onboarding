@@ -28,6 +28,7 @@ const AssetCreatePage = lazy(() => import('./pages/assetmanagement/AssetCreatePa
 const AssetEditPage = lazy(() => import('./pages/assetmanagement/AssetEditPage'));
 const TaskDetailsModal = lazy(() => import('./pages/supportdesk/TaskDetailsModal'));
 const OnboardingProcessPage = lazy(() => import('./pages/onboarding/OnboardingProcessPage'));
+const SubmissionSuccessPage = lazy(() => import('./pages/onboarding/SubmissionSuccessPage'));
 
 const ProfilePage = lazy(() => import('./pages/user/ProfilePage'));
 const LeaveTrackerPage = lazy(() => import('./pages/leave/LeaveTrackerPage')); // NEW
@@ -86,6 +87,7 @@ const App: React.FC<AppProps> = (): JSX.Element => {
             <Route path="/onboarding" element={<OnboardingDashboardPage />} /> {/* Added Onboarding Dashboard */}
             <Route path="/onboarding/add/:step" element={<OnboardingProcessPage />} />
             <Route path="/onboarding/process" element={<OnboardingProcessPage />} />
+            <Route path="/onboarding/success" element={<SubmissionSuccessPage />} />
             <Route path="/enrollment/new" element={<NewEnrollmentPage />} />
             <Route path="/submissions" element={<AllSubmissionsPage />} /> {/* Accessible by default, internal checks needed */}
             {/* Role-Based Access Controlled Routes */}

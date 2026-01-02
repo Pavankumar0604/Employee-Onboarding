@@ -86,7 +86,7 @@ type LeaveInsert = Omit<Database['public']['Tables']['leave_requests']['Insert']
 type LeaveUpdate = Partial<Database['public']['Tables']['leave_requests']['Update'] & { status: string; manager_approval_date: string; hr_confirmation_date: string; current_approver_id: null | string; rejection_reason: string | null | undefined }>;
 
 type EnrollmentRow = Database['public']['Tables']['onboarding_submissions']['Row'];
-type EnrollmentInsert = Omit<EnrollmentRow, 'id' | 'created_at' | 'updated_at'>;
+type EnrollmentInsert = Omit<EnrollmentRow, 'created_at' | 'updated_at'>;
 type EnrollmentUpdate = Partial<EnrollmentRow>;
 
 // Attendance types based on AttendanceRecord from mindmesh.d.ts
@@ -1086,18 +1086,24 @@ export const getInvoiceSummaryData = async (siteId: string, date: Date): Promise
 
 /** Fetches city and state details based on pincode. */
 export const getPincodeDetails = async (pincode: string): Promise<{ city: string; state: string }> => {
-  console.log(`Mock Pincode lookup for: ${pincode}`);
-  await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+  try {
+    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+    const data = await response.json();
 
-  // Mock logic: return fixed data for now
-  if (pincode === '400001') {
-    return { city: 'Mumbai', state: 'Maharashtra' };
+    if (Array.isArray(data) && data.length > 0 && data[0].Status === 'Success') {
+      const postOffice = data[0].PostOffice[0];
+      return {
+        city: postOffice.District,
+        state: postOffice.State
+      };
+    } else {
+      throw new Error('Invalid Pincode');
+    }
+  } catch (error) {
+    console.error('Error fetching pincode details:', error);
+    // Fallback or re-throw based on desired UX. Re-throwing allows the UI to show the error.
+    throw new Error('Failed to fetch pincode details. Please check connection or enter manually.');
   }
-  if (pincode === '110001') {
-    return { city: 'New Delhi', state: 'Delhi' };
-  }
-  // Simulate failure for other pincodes
-  throw new Error('Pincode details not found.');
 };
 /** Mocks approving a leave request. */
 export const approveLeaveRequest = async (leaveId: string, userId: string): Promise<void> => {

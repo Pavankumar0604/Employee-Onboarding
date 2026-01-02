@@ -100,7 +100,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({ file, onFileChange }
   return (
     <>
       {isCameraOpen && <CameraCaptureModal isOpen={isCameraOpen} onClose={() => setIsCameraOpen(false)} onCapture={handleCapture} captureGuidance="profile" />}
-      <div className="relative">
+      <div className="relative w-24 h-24">
         {isUploading ? (
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full z-10">
             <Loader2 className="h-8 w-8 animate-spin text-white" />

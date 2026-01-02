@@ -33,7 +33,7 @@ import SalaryLineItemConfig from '../../components/hr/SalaryLineItemConfig.tsx';
 // Helper to convert array of objects to CSV string
 const toCSV = (data: Record<string, any>[], columns: string[]): string => {
     const header = columns.join(',');
-    const rows = data.map(row => 
+    const rows = data.map(row =>
         columns.map(col => {
             const val = row[col] === null || row[col] === undefined ? '' : String(row[col]);
             if (val.includes(',') || val.includes('"') || val.includes('\n')) {
@@ -49,7 +49,7 @@ const toCSV = (data: Record<string, any>[], columns: string[]): string => {
 const fromCSV = (csvText: string): Record<string, string>[] => {
     const lines = csvText.trim().replace(/\r/g, '').split('\n');
     if (lines.length < 2) return [];
-    
+
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     const rows: Record<string, string>[] = [];
 
@@ -57,7 +57,7 @@ const fromCSV = (csvText: string): Record<string, string>[] => {
         const row: Record<string, string> = {};
         // Regex for CSV parsing, handles quoted fields containing commas.
         const values = lines[i].match(/(?<=,|^)(?:"(?:[^"]|"")*"|[^,]*)/g) || [];
-        
+
         headers.forEach((header, index) => {
             let value = (values[index] || '').trim();
             if (value.startsWith('"') && value.endsWith('"')) {
@@ -72,14 +72,14 @@ const fromCSV = (csvText: string): Record<string, string>[] => {
 
 
 const entityCsvColumns = [
-    'GroupId', 'GroupName', 'CompanyId', 'CompanyName', 'EntityId', 'EntityName', 'organizationId', 'Location', 'RegisteredAddress', 
-    'RegistrationType', 'RegistrationNumber', 'GSTNumber', 'PANNumber', 'Email', 'EShramNumber', 
+    'GroupId', 'GroupName', 'CompanyId', 'CompanyName', 'EntityId', 'EntityName', 'organizationId', 'Location', 'RegisteredAddress',
+    'RegistrationType', 'RegistrationNumber', 'GSTNumber', 'PANNumber', 'Email', 'EShramNumber',
     'ShopAndEstablishmentCode', 'EPFOCode', 'ESICCode', 'PSARALicenseNumber', 'PSARAValidTill'
 ];
 
 const siteConfigCsvColumns = [
-    'organizationId', 'organizationName', 'location', 'entityId', 'billingName', 'registeredAddress', 
-    'gstNumber', 'panNumber', 'email1', 'email2', 'email3', 'eShramNumber', 'shopAndEstablishmentCode', 
+    'organizationId', 'organizationName', 'location', 'entityId', 'billingName', 'registeredAddress',
+    'gstNumber', 'panNumber', 'email1', 'email2', 'email3', 'eShramNumber', 'shopAndEstablishmentCode',
     'keyAccountManager', 'siteAreaSqFt', 'projectType', 'apartmentCount', 'agreementDetails', 'siteOperations'
 ];
 
@@ -94,12 +94,12 @@ const triggerDownload = (data: BlobPart, fileName: string) => {
 };
 
 const NameInputModal: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (name: string) => void;
-  title: string;
-  label: string;
-  initialName?: string;
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (name: string) => void;
+    title: string;
+    label: string;
+    initialName?: string;
 }> = ({ isOpen, onClose, onSave, title, label, initialName = '' }) => {
     const [name, setName] = useState(initialName);
     const [error, setError] = useState('');
@@ -169,21 +169,21 @@ const EntityManagement: React.FC = () => {
 
     // Modals state
     const [entityFormState, setEntityFormState] = useState<{ isOpen: boolean; initialData: Entity | null; companyName: string }>({ isOpen: false, initialData: null, companyName: '' });
-    const [nameModalState, setNameModalState] = useState<{ 
-      isOpen: boolean; 
-      mode: 'add' | 'edit';
-      type: 'group' | 'company'; 
-      id?: string; 
-      groupId?: string; 
-      initialName?: string; 
-      title: string; 
-      label: string 
+    const [nameModalState, setNameModalState] = useState<{
+        isOpen: boolean;
+        mode: 'add' | 'edit';
+        type: 'group' | 'company';
+        id?: string;
+        groupId?: string;
+        initialName?: string;
+        title: string;
+        label: string
     }>({ isOpen: false, mode: 'add', type: 'group', title: '', label: '' });
     const [deleteModalState, setDeleteModalState] = useState<{ isOpen: boolean; type: 'group' | 'company' | 'client'; id: string; name: string }>({ isOpen: false, type: 'group', id: '', name: '' });
     const [siteConfigForm, setSiteConfigForm] = useState<{ isOpen: boolean; org: Organization | null }>({ isOpen: false, org: null });
-    
+
     const allClients = useMemo(() => {
-        return groups.flatMap((g: OrganizationGroup) => g.companies.flatMap((c: Company) => c.entities.map((e: Entity) => ({...e, companyName: c.name}))));
+        return groups.flatMap((g: OrganizationGroup) => g.companies.flatMap((c: Company) => c.entities.map((e: Entity) => ({ ...e, companyName: c.name }))));
     }, [groups]);
 
     useEffect(() => {
@@ -266,7 +266,7 @@ const EntityManagement: React.FC = () => {
     };
 
     const handleDeleteClick = (type: 'group' | 'company' | 'client', id: string, name: string) => setDeleteModalState({ isOpen: true, type, id, name });
-    
+
     const handleConfirmDelete = () => {
         const { type, id, name } = deleteModalState;
         if (type === 'group') {
@@ -306,10 +306,10 @@ const EntityManagement: React.FC = () => {
                 setGroups(prev => prev.map(g => g.id === id ? { ...g, name } : g));
                 setToast({ message: 'Group updated.', type: 'success' });
             } else if (type === 'company' && id && groupId) {
-                setGroups(prev => prev.map(g => 
-                    g.id === groupId 
-                    ? { ...g, companies: g.companies.map((c: Company) => c.id === id ? { ...c, name } : c) } 
-                    : g
+                setGroups(prev => prev.map(g =>
+                    g.id === groupId
+                        ? { ...g, companies: g.companies.map((c: Company) => c.id === id ? { ...c, name } : c) }
+                        : g
                 ));
                 setToast({ message: 'Company updated.', type: 'success' });
             }
@@ -375,7 +375,7 @@ const EntityManagement: React.FC = () => {
         triggerDownload(csvData, fileName);
         setToast({ message: 'Data exported successfully.', type: 'success' });
     };
-    
+
     const handleDownloadTemplate = () => {
         let columns: string[];
         let fileName: string;
@@ -396,7 +396,7 @@ const EntityManagement: React.FC = () => {
     const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
-    
+
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
@@ -406,17 +406,17 @@ const EntityManagement: React.FC = () => {
                 const lines = text.trim().replace(/\r/g, '').split('\n');
                 if (lines.length < 1) throw new Error("CSV file is empty.");
                 const fileHeaders = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-                
+
                 if (activeSubcategory === 'client_structure') {
                     if (fileHeaders.join(',') !== entityCsvColumns.join(',')) {
                         throw new Error(`Header mismatch. Please use the downloaded template.`);
                     }
-                    
+
                     const parsedData = fromCSV(text);
                     if (parsedData.length === 0) throw new Error("No data rows found.");
-    
+
                     const newGroupsMap = new Map<string, { group: OrganizationGroup, companiesMap: Map<string, Company> }>();
-    
+
                     for (const row of parsedData) {
                         if (!newGroupsMap.has(row.GroupId)) {
                             newGroupsMap.set(row.GroupId, {
@@ -424,15 +424,15 @@ const EntityManagement: React.FC = () => {
                                 companiesMap: new Map<string, Company>()
                             });
                         }
-    
+
                         const groupData = newGroupsMap.get(row.GroupId)!;
-    
+
                         if (!groupData.companiesMap.has(row.CompanyId)) {
                             groupData.companiesMap.set(row.CompanyId, { id: row.CompanyId, name: row.CompanyName, entities: [] });
                         }
-                        
+
                         const companyData = groupData.companiesMap.get(row.CompanyId)!;
-    
+
                         const entity: Entity = {
                             id: row.EntityId,
                             name: row.EntityName,
@@ -451,21 +451,21 @@ const EntityManagement: React.FC = () => {
                             psaraLicenseNumber: row.PSARALicenseNumber,
                             psaraValidTill: row.PSARAValidTill,
                         };
-    
+
                         companyData.entities.push(entity);
                     }
-    
+
                     const newGroups: OrganizationGroup[] = Array.from(newGroupsMap.values()).map(gData => {
                         gData.group.companies = Array.from(gData.companiesMap.values());
                         return gData.group;
                     });
-                    
+
                     setGroups(newGroups);
                     setToast({ message: `Successfully imported ${parsedData.length} client records.`, type: 'success' });
 
                 } else if (activeSubcategory === 'site_configuration') {
                     if (fileHeaders.join(',') !== siteConfigCsvColumns.join(',')) {
-                         throw new Error(`Header mismatch. Please use the downloaded template.`);
+                        throw new Error(`Header mismatch. Please use the downloaded template.`);
                     }
 
                     const parsedData = fromCSV(text);
@@ -487,7 +487,7 @@ const EntityManagement: React.FC = () => {
                         }
                         return config as SiteConfiguration;
                     });
-                    
+
                     setSiteConfigs(prev => {
                         const updated = [...prev];
                         newSiteConfigs.forEach(newConfig => {
@@ -508,7 +508,7 @@ const EntityManagement: React.FC = () => {
             }
         };
         reader.readAsText(file);
-      };
+    };
 
 
     const renderContent = () => {
@@ -547,12 +547,12 @@ const EntityManagement: React.FC = () => {
                                                 <div key={company.id} className="border border-border rounded-lg">
                                                     <div className="p-2 flex items-center justify-between bg-card">
                                                         <div className="flex items-center gap-2">
-                                                             <button onClick={() => toggleExpand(company.id)}><ChevronRight className={`h-5 w-5 transition-transform ${expanded[company.id] ? 'rotate-90' : ''}`} /></button>
-                                                             <span>{company.name} ({company.entities.length} clients)</span>
+                                                            <button onClick={() => toggleExpand(company.id)}><ChevronRight className={`h-5 w-5 transition-transform ${expanded[company.id] ? 'rotate-90' : ''}`} /></button>
+                                                            <span>{company.name} ({company.entities.length} clients)</span>
                                                         </div>
                                                         <div className="flex items-center gap-2">
-                                                            <Button variant="icon" size="sm" title={`View ${company.entities.length} clients`} onClick={() => setViewingClients({ companyName: company.name, clients: company.entities })}><Eye className="h-4 w-4"/></Button>
-                                                            <Button variant="icon" size="sm" onClick={() => handleAddClient(company.name)} title="Add client"><Plus className="h-4 w-4"/></Button>
+                                                            <Button variant="icon" size="sm" title={`View ${company.entities.length} clients`} onClick={() => setViewingClients({ companyName: company.name, clients: company.entities })}><Eye className="h-4 w-4" /></Button>
+                                                            <Button variant="icon" size="sm" onClick={() => handleAddClient(company.name)} title="Add client"><Plus className="h-4 w-4" /></Button>
                                                             <Button variant="icon" size="sm" onClick={() => setNameModalState({ isOpen: true, mode: 'edit', type: 'company', id: company.id, groupId: group.id, initialName: company.name, title: 'Edit Company Name', label: 'Company Name' })} title="Edit company name"><Edit className="h-4 w-4" /></Button>
                                                             <Button variant="icon" size="sm" onClick={() => handleDeleteClick('company', company.id, company.name)} title="Delete company"><Trash2 className="h-4 w-4 text-red-500" /></Button>
                                                         </div>
@@ -563,8 +563,8 @@ const EntityManagement: React.FC = () => {
                                                                 <div key={client.id} className="p-2 flex items-center justify-between hover:bg-page rounded">
                                                                     <span>{client.name}</span>
                                                                     <div className="flex items-center gap-1">
-                                                                        <Button variant="icon" size="sm" onClick={() => handleEditClient(client, company.name)}><Edit className="h-4 w-4"/></Button>
-                                                                        <Button variant="icon" size="sm" onClick={() => handleDeleteClick('client', client.id, client.name)}><Trash2 className="h-4 w-4 text-red-500"/></Button>
+                                                                        <Button variant="icon" size="sm" onClick={() => handleEditClient(client, company.name)}><Edit className="h-4 w-4" /></Button>
+                                                                        <Button variant="icon" size="sm" onClick={() => handleDeleteClick('client', client.id, client.name)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
                                                                     </div>
                                                                 </div>
                                                             ))}
@@ -581,7 +581,7 @@ const EntityManagement: React.FC = () => {
                 );
             case 'site_configuration':
                 return (
-                     <div className="md:bg-card md:p-6 md:rounded-xl md:shadow-card">
+                    <div className="md:bg-card md:p-6 md:rounded-xl md:shadow-card">
                         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
                             <h4 className="text-lg font-semibold text-primary-text">Sites Configuration</h4>
                             <div className="flex items-center gap-2 flex-wrap">
@@ -612,14 +612,14 @@ const EntityManagement: React.FC = () => {
                                                     </div>
                                                 </td>
                                                 <td data-label="Status" className="px-4 py-3">
-                                                    {isConfigured ? 
-                                                        <span className="flex items-center text-green-600"><CheckCircle className="h-4 w-4 mr-1"/> Complete</span> : 
-                                                        <span className="flex items-center text-yellow-600"><AlertCircle className="h-4 w-4 mr-1"/> Incomplete</span>
+                                                    {isConfigured ?
+                                                        <span className="flex items-center text-green-600"><CheckCircle className="h-4 w-4 mr-1" /> Complete</span> :
+                                                        <span className="flex items-center text-yellow-600"><AlertCircle className="h-4 w-4 mr-1" /> Incomplete</span>
                                                     }
                                                 </td>
                                                 <td data-label="Actions" className="px-4 py-3">
                                                     <Button size="sm" variant="outline" onClick={() => setSiteConfigForm({ isOpen: true, org })}>
-                                                        <Eye className="mr-2 h-4 w-4"/> View / Edit
+                                                        <Eye className="mr-2 h-4 w-4" /> View / Edit
                                                     </Button>
                                                 </td>
                                             </tr>
@@ -644,7 +644,7 @@ const EntityManagement: React.FC = () => {
             case 'salary_template': return <SalaryTemplateConfig />;
             case 'salary_line_item': return <SalaryLineItemConfig />;
             default:
-                 const activeItem = subcategories.find(sc => sc.key === activeSubcategory);
+                const activeItem = subcategories.find(sc => sc.key === activeSubcategory);
                 return <PlaceholderView title={activeItem?.label || 'Configuration'} />;
         }
     };
@@ -655,9 +655,9 @@ const EntityManagement: React.FC = () => {
             {toast && <Toast message={toast.message} type={toast.type} onDismiss={() => setToast(null)} />}
             <TemplateInstructionsModal isOpen={isInstructionsOpen} onClose={() => setIsInstructionsOpen(false)} />
             {entityFormState.isOpen && <EntityForm {...entityFormState} onClose={() => setEntityFormState(p => ({ ...p, isOpen: false }))} onSave={handleSaveClient} />}
-            <NameInputModal 
+            <NameInputModal
                 isOpen={nameModalState.isOpen}
-                onClose={() => setNameModalState({ isOpen: false, mode: 'add', type: 'group', title: '', label: '' })} 
+                onClose={() => setNameModalState({ isOpen: false, mode: 'add', type: 'group', title: '', label: '' })}
                 onSave={handleSaveName}
                 title={nameModalState.title}
                 label={nameModalState.label}
@@ -666,7 +666,7 @@ const EntityManagement: React.FC = () => {
             <Modal isOpen={deleteModalState.isOpen} onClose={() => setDeleteModalState(p => ({ ...p, isOpen: false }))} onConfirm={handleConfirmDelete} title="Confirm Deletion">
                 Are you sure you want to delete the {deleteModalState.type} "{deleteModalState.name}"? This action cannot be undone.
             </Modal>
-            {siteConfigForm.isOpen && siteConfigForm.org && <SiteConfigurationForm isOpen={siteConfigForm.isOpen} onClose={() => setSiteConfigForm({ isOpen: false, org: null })} onSave={() => {}} organization={siteConfigForm.org} allClients={allClients} initialData={siteConfigs.find(c => c.organizationId === siteConfigForm.org?.id)} />}
+            {siteConfigForm.isOpen && siteConfigForm.org && <SiteConfigurationForm isOpen={siteConfigForm.isOpen} onClose={() => setSiteConfigForm({ isOpen: false, org: null })} onSave={() => { }} organization={siteConfigForm.org} allClients={allClients} initialData={siteConfigs.find(c => c.organizationId === siteConfigForm.org?.id)} />}
             {viewingClients && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60" onClick={() => setViewingClients(null)}>
                     <div className="bg-card rounded-xl shadow-card p-6 w-full max-w-md m-4 animate-fade-in-scale" onClick={e => e.stopPropagation()}>
@@ -688,14 +688,14 @@ const EntityManagement: React.FC = () => {
             )}
 
 
-             <AdminPageHeader title="Client Management">
+            <AdminPageHeader title="Client Management">
                 <div className="flex items-center gap-2 flex-wrap">
                     <Button variant="outline" onClick={() => setIsInstructionsOpen(true)}><HelpCircle className="mr-2 h-4 w-4" /> Help</Button>
                     <input type="file" ref={importRef} className="hidden" accept=".csv" onChange={handleImport} />
                     <Button onClick={handleSaveAll}><Save className="mr-2 h-4 w-4" /> Save All Changes</Button>
                 </div>
             </AdminPageHeader>
-            
+
             <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted" />
                 <input
@@ -706,8 +706,8 @@ const EntityManagement: React.FC = () => {
                     className="form-input pl-10 w-full"
                 />
             </div>
-            
-             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <nav className="md:col-span-1">
                     {isMobile ? (
                         <Select
@@ -724,11 +724,10 @@ const EntityManagement: React.FC = () => {
                                 <button
                                     key={sc.key}
                                     onClick={() => setActiveSubcategory(sc.key)}
-                                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-left transition-colors ${
-                                        activeSubcategory === sc.key 
-                                            ? 'bg-accent text-white' 
-                                            : 'text-muted hover:bg-accent-light hover:text-accent-dark'
-                                    }`}
+                                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-left transition-colors ${activeSubcategory === sc.key
+                                        ? 'bg-accent text-white'
+                                        : 'text-muted hover:bg-accent-light hover:text-accent-dark'
+                                        }`}
                                 >
                                     <sc.icon className="h-5 w-5" />
                                     <span>{sc.label}</span>

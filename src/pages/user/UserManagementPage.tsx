@@ -137,10 +137,10 @@ const UserManagement: React.FC = () => {
                 <table className="min-w-full divide-y divide-border">
                     <thead className="bg-page">
                         <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted uppercase">Name</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted uppercase">Email</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted uppercase">Role</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted uppercase">Actions</th>
+                            <th scope="col" className="px-6 py-3 text-left text-label uppercase">Name</th>
+                            <th scope="col" className="px-6 py-3 text-left text-label uppercase">Email</th>
+                            <th scope="col" className="px-6 py-3 text-left text-label uppercase">Role</th>
+                            <th scope="col" className="px-6 py-3 text-left text-label uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="bg-card divide-y divide-border">

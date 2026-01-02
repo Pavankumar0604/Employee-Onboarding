@@ -159,10 +159,6 @@ export const useAuthStore = create<AuthState>((set, get) => {
       }
     },
     initializeUserSession: async () => {
-      if (get().isInitialized) {
-        return;
-      }
-
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (authUser) {
         try {
@@ -180,6 +176,14 @@ export const useAuthStore = create<AuthState>((set, get) => {
           const roleId = typeof userRowData.role_id === 'string' ? userRowData.role_id : 'guest';
           const normalizedRole = normalizeRoleName(roleId);
 
+          // Validate photo_url to prevent 404 errors
+          const rawPhotoUrl = userRowData.photo_url || userRowData.avatar_url;
+          const isValidUrl = rawPhotoUrl &&
+            typeof rawPhotoUrl === 'string' &&
+            (rawPhotoUrl.startsWith('http://') ||
+              rawPhotoUrl.startsWith('https://') ||
+              rawPhotoUrl.startsWith('/'));
+
           const userProfile: User = {
             id: userRowData.id,
             email: userRowData.email,
@@ -191,7 +195,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
             is_active: true,
             created_at: userRowData.created_at,
             phone_number: userRowData.phone || null,
-            photo_url: userRowData.photo_url || userRowData.avatar_url || null,
+            photo_url: isValidUrl ? rawPhotoUrl : null,
           };
 
           set({ user: userProfile, profile: userProfile, isInitialized: true });

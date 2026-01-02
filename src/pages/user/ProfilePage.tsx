@@ -18,6 +18,7 @@ import SlideToConfirm from '../../components/ui/SlideToConfirm';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useThemeStore } from '../../store/themeStore';
 import Checkbox from '../../components/ui/Checkbox';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 // --- Profile Section ---
 const profileValidationSchema = yup.object({
@@ -89,7 +90,7 @@ const ProfilePage: React.FC = () => {
                 phone_number: profile.phone_number || '',
             });
         }
-    }, []);
+    }, [profile, reset]);
 
     const handlePhotoChange = async (file: UploadedFile | null) => {
         if (!profile) return;
@@ -156,11 +157,32 @@ const ProfilePage: React.FC = () => {
         return role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     };
 
-    if (authIsLoading) return <div>Loading user profile...</div>;
-    if (!profile) return <div>Loading user profile...</div>;
+    if (authIsLoading) return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+            <div className="text-center space-y-4">
+                <LoadingSpinner size="xl" />
+                <p className="text-body-small text-gray-600 dark:text-gray-400">Loading your profile...</p>
+            </div>
+        </div>
+    );
+    if (!profile) return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+            <div className="text-center space-y-4">
+                <LoadingSpinner size="xl" />
+                <p className="text-body-small text-gray-600 dark:text-gray-400">Loading your profile...</p>
+            </div>
+        </div>
+    );
 
     // Append a timestamp to the photo URL to bust browser cache
-    if (!profile) return <div>Loading user profile...</div>;
+    if (!profile) return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+            <div className="text-center space-y-4">
+                <LoadingSpinner size="xl" />
+                <p className="text-body-small text-gray-600 dark:text-gray-400">Loading your profile...</p>
+            </div>
+        </div>
+    );
     const cacheBustedPhotoUrl = profile.photo_url ? `${profile.photo_url}?t=${new Date().getTime()}` : null;
 
     const avatarFile: UploadedFile | null = cacheBustedPhotoUrl
@@ -177,7 +199,7 @@ const ProfilePage: React.FC = () => {
                 <div className="flex flex-col items-center text-center gap-4">
                     <AvatarUpload file={avatarFile} onFileChange={handlePhotoChange} />
                     <div>
-                        <h2 className="text-2xl font-bold">{profile.name}</h2>
+                        <h2 className="text-heading-m font-semibold">{profile.name}</h2>
                         <p className="text-muted">{profile.role.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}</p>
                     </div>
                 </div>
@@ -264,16 +286,16 @@ const ProfilePage: React.FC = () => {
                         <AvatarUpload file={avatarFile} onFileChange={handlePhotoChange} />
                     </div>
                     <div className="text-center md:text-left">
-                        <h2 className="text-3xl font-bold text-primary-text">{profile.name}</h2>
-                        <p className="text-muted text-lg">{getRoleName(profile.role)}</p>
-                        <p className="text-sm text-muted mt-1">{profile.email}</p>
+                        <h2 className="text-heading-l font-semibold text-primary-text">{profile.name}</h2>
+                        <p className="text-muted text-body-small">{getRoleName(profile.role)}</p>
+                        <p className="text-body-small text-muted mt-1">{profile.email}</p>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-8">
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Profile Details</h3>
+                            <h3 className="text-heading-s font-medium mb-4 text-gray-900 dark:text-white">Profile Details</h3>
                             <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-4">
                                 <Input label="Full Name" id="name" error={profileErrors.name?.message} registration={register('name')} />
                                 <Input label="Email Address" id="email" type="email" error={profileErrors.email?.message} registration={register('email')} />
@@ -285,16 +307,16 @@ const ProfilePage: React.FC = () => {
                         </div>
 
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Work Hours Tracking</h3>
+                            <h3 className="text-heading-s font-medium mb-4 text-gray-900 dark:text-white">Work Hours Tracking</h3>
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className={`text-center p-4 rounded-lg transition-colors duration-300 ${isCheckedIn ? 'bg-sky-100 dark:bg-sky-900' : 'bg-gray-100 dark:bg-gray-700'}`}>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">Last Check In</p>
-                                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatTime(lastCheckInTime)}</p>
+                                        <p className="text-body-small text-gray-500 dark:text-gray-400">Last Check In</p>
+                                        <p className="text-body-large font-semibold text-gray-900 dark:text-white">{formatTime(lastCheckInTime)}</p>
                                     </div>
                                     <div className="text-center bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">Last Check Out</p>
-                                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatTime(lastCheckOutTime)}</p>
+                                        <p className="text-body-small text-gray-500 dark:text-gray-400">Last Check Out</p>
+                                        <p className="text-body-large font-semibold text-gray-900 dark:text-white">{formatTime(lastCheckOutTime)}</p>
                                     </div>
                                 </div>
 
@@ -311,14 +333,14 @@ const ProfilePage: React.FC = () => {
 
                     <div className="space-y-8">
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Appearance</h3>
+                            <h3 className="text-heading-s font-medium mb-4 text-gray-900 dark:text-white">Appearance</h3>
                             <div className="space-y-4">
                                 <Checkbox id="theme-automatic-desktop" label="Automatic Theme" description="Automatically switch between light and dark themes based on system settings." checked={isAutomatic} onChange={setAutomatic} />
                                 <Checkbox id="theme-dark-mode-desktop" label="Dark Mode" description="Manually enable or disable dark mode." checked={theme === 'dark'} onChange={(checked) => setTheme(checked ? 'dark' : 'light')} disabled={isAutomatic} />
                             </div>
                         </div>
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Account Actions</h3>
+                            <h3 className="text-heading-s font-medium mb-4 text-gray-900 dark:text-white">Account Actions</h3>
                             <div className="space-y-3">
                                 <Button onClick={() => navigate('/leaves/dashboard')} variant="secondary" className="w-full justify-center"><Crosshair className="mr-2 h-4 w-4" /> Leave Tracker</Button>
                                 <Button onClick={handleLogoutClick} variant="danger" className="w-full justify-center"><LogOut className="mr-2 h-4 w-4" /> Log Out</Button>

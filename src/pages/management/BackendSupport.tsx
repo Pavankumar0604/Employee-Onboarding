@@ -4,15 +4,15 @@ import { api } from '../../services/api';
 import type { SupportTicket } from '../../types/support';
 import type { User } from '../../types/mindmesh.d';
 import { useAuthStore } from '../../store/authStore';
-import { Loader2, Plus, LifeBuoy, Users, Phone, MessageSquare, Video, MessageSquare as Search } from 'lucide-react';
+import { Loader2, Plus, Users, Phone, MessageSquare, Video, MessageSquare as Search } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import Toast from '../../components/ui/Toast';
 import { formatDistanceToNow } from 'date-fns';
 import NewTicketModal from '../../components/support/NewTicketModal';
 import ProfilePlaceholder from '../../components/ui/ProfilePlaceholder';
-// FIX: Add missing imports for Input and Select components.
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
+import PageHeader from '../../components/layout/PageHeader';
 
 type PriorityKey = 'Low' | 'Medium' | 'High' | 'Urgent';
 const PriorityIndicator: React.FC<{ priority: PriorityKey }> = ({ priority }) => {
@@ -153,7 +153,7 @@ const SupportDashboard: React.FC = () => {
     );
 
     return (
-        <div className="p-4 space-y-6">
+        <>
             {toast && <Toast message={toast.message} type={toast.type} onDismiss={() => setToast(null)} />}
             {isNewTicketModalOpen && (
                 <NewTicketModal
@@ -163,17 +163,17 @@ const SupportDashboard: React.FC = () => {
                 />
             )}
 
-            <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-full bg-accent-light"><LifeBuoy className="h-6 w-6 text-accent-dark" /></div>
-                    <h2 className="text-2xl font-bold text-primary-text">Backend Support & Audit</h2>
-                </div>
-                <Button onClick={() => setIsNewTicketModalOpen(true)} className="w-full lg:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> New Post
-                </Button>
-            </div>
+            <PageHeader
+                title="Backend Support & Audit"
+                subtitle="Manage support tickets and collaborate with team members"
+                primaryAction={
+                    <Button onClick={() => setIsNewTicketModalOpen(true)}>
+                        <Plus className="mr-2 h-4 w-4" /> New Post
+                    </Button>
+                }
+            />
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
                 <StatCard title="Open" value={stats.open} className="bg-red-500/10" />
                 <StatCard title="In Progress" value={stats.inProgress} className="bg-blue-500/10" />
                 <StatCard title="Pending Your Action" value={stats.resolved} className="bg-green-500/10" />
@@ -236,7 +236,7 @@ const SupportDashboard: React.FC = () => {
                     </div>
                 </aside>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -25,7 +25,7 @@ export interface OnboardingState {
     bank: BankDetails;
     esi: EsiDetails; // Added ESI state
     data: any;
-    submitOnboarding: () => Promise<void>;
+    submitOnboarding: () => Promise<{ success: boolean; error?: string }>;
     updateOrganization: (updates: Partial<OrganizationData>) => void;
     updatePersonal: (updates: Partial<PersonalDetails>) => void;
     updateAddress: (updates: Partial<AddressDetails>) => void; // Added method
@@ -135,7 +135,7 @@ const initialEsiState: EsiDetails = {
 };
 
 export const useOnboardingStore = create(
-    immer<OnboardingState>((set) => ({
+    immer<OnboardingState>((set, get) => ({
         organization: initialOrganizationState,
         personal: initialPersonalState,
         education: initialEducationState,
@@ -147,142 +147,140 @@ export const useOnboardingStore = create(
         data: {},
         submitOnboarding: async () => {
             const { user } = useAuthStore.getState(); // Get user from authStore
+            const state = get(); // Get current state using get()
+
             if (!user?.id) {
                 console.error("No authenticated user found for onboarding submission.");
-                alert('Onboarding submission failed: User not authenticated.');
-                return;
+                return { success: false, error: 'User not authenticated' };
             }
 
             try {
-                // Submitting onboarding data
+                // Personal data ready
+                let avatarUrl: string | null = null;
+                let idProofUrl: string | null = null;
+                let bankProofUrl: string | null = null;
+                let gmcPolicyCopyUrl: string | null = null;
+                // Education documents are handled inline
 
-                set(async (state) => {
-                    // Personal data ready
-                    let avatarUrl: string | null = null;
-                    let idProofUrl: string | null = null;
-                    let bankProofUrl: string | null = null;
-                    let gmcPolicyCopyUrl: string | null = null;
-                    // Education documents are handled inline
-
-                    // 1. Upload the avatar if it exists
-                    if (state.personal && state.personal.photo?.file) {
-                        // Uploading avatar
-                        // NOTE: Assuming employeeId is the user ID for now, but this should be replaced with the actual authenticated user ID (auth.uid())
-                        const uploadResult = await api.uploadImage('avatars', state.personal.photo.file, state.personal.employeeId);
-                        if (uploadResult) {
-                            avatarUrl = uploadResult.publicUrl;
-                            // Avatar uploaded
-                        } else {
-                            console.warn("Avatar upload failed, but continuing."); // Non-critical failure
-                        }
-                    }
-
-                    // 2. Upload ID Proof if it exists
-                    if (state.personal && state.personal.idProof?.file) {
-                        // Uploading ID Proof
-                        const uploadResult = await api.uploadDocument(state.personal.idProof.file);
-                        if (uploadResult) {
-                            idProofUrl = uploadResult.url;
-                            // ID Proof uploaded
-                        } else {
-                            console.warn("ID Proof upload failed, but continuing."); // Non-critical failure
-                        }
-                    }
-
-                    // 3. Upload Bank Proof if it exists
-                    if (state.bank && state.bank.bankProof?.file) {
-                        // Uploading Bank Proof
-                        const uploadResult = await api.uploadDocument(state.bank.bankProof.file);
-                        if (uploadResult) {
-                            bankProofUrl = uploadResult.url;
-                            // Bank Proof uploaded
-                        } else {
-                            console.warn("Bank Proof upload failed, but continuing."); // Non-critical failure
-                        }
-                    }
-
-                    // 4. Upload GMC Policy Copy if it exists
-                    if (state.gmc && state.gmc.gmcPolicyCopy?.file) {
-                        // Uploading GMC Policy Copy
-                        const uploadResult = await api.uploadDocument(state.gmc.gmcPolicyCopy.file);
-                        if (uploadResult) {
-                            gmcPolicyCopyUrl = uploadResult.url;
-                            // GMC Policy Copy uploaded
-                        } else {
-                            console.warn("GMC Policy Copy upload failed, but continuing."); // Non-critical failure
-                        }
-                    }
-
-                    // 5. Upload Education Documents
-                    const updatedEducation = await Promise.all(state.education.map(async (edu: EducationRecord) => {
-                        if (edu.document?.file) {
-                            // Uploading education document
-                            try {
-                                const uploadResult = await api.uploadDocument(edu.document.file);
-                                if (uploadResult) {
-                                    return { ...edu, document: { ...edu.document, url: uploadResult.url } };
-                                }
-                            } catch (e) {
-                                console.warn(`Education document upload failed for ${edu.id}:`, e);
-                            }
-                        }
-                        return edu;
-                    }));
-
-
-                    // 6. Prepare the final submission payload (mapping frontend fields to DB jsonb structure)
-                    const submissionPayload = {
-                        user_id: user.id, // Use the actual authenticated user ID
-                        status: 'Draft',
-                        portal_sync_status: 'Pending', // Default status
-                        organization_id: state.organization.organizationId,
-                        organization_name: state.organization.organizationName,
-                        enrollment_date: state.organization.joiningDate, // Assuming joiningDate is enrollment_date
-                        requires_manual_verification: false, // Default
-                        forms_generated: false, // Default
-
-                        // Store complex objects as JSONB
-                        personal: {
-                            ...state.personal,
-                            photo: avatarUrl, // Store URL instead of UploadedFile object
-                            idProof: idProofUrl, // Store URL
-                            verifiedStatus: state.personal.verifiedStatus || {}, // Ensure proper type
-                        } as any, // Type assertion for Json compatibility
-                        address: state.address,
-                        family: state.family,
-                        education: updatedEducation.map((e: EducationRecord) => ({ ...e, document: e.document?.url || null })), // Store URL
-                        bank: {
-                            ...state.bank,
-                            bankProof: bankProofUrl, // Store URL
-                        },
-                        uan: { uanNumber: state.personal.uanNumber, hasPreviousPf: state.personal.hasPreviousPf, pfNumber: state.personal.pfNumber }, // Extract UAN details
-                        esi: state.esi,
-                        gmc: {
-                            ...state.gmc,
-                            gmcPolicyCopy: gmcPolicyCopyUrl, // Store URL
-                        },
-                        // Required fields for EnrollmentInsert
-                        organization: state.organization,
-                        uniforms: [],
-                        biometrics: {},
-                        salary_change_request: null,
-                        verification_usage: {},
-                    };
-
-                    // Final submission payload ready
-                    const submissionResult = await api.createEnrollment(submissionPayload);
-
-                    if (submissionResult) {
-                        alert('Onboarding data submitted successfully!');
-                        // Optionally reset the form or navigate
-                        state.reset();
+                // 1. Upload the avatar if it exists
+                if (state.personal && state.personal.photo?.file) {
+                    // Uploading avatar
+                    // NOTE: Assuming employeeId is the user ID for now, but this should be replaced with the actual authenticated user ID (auth.uid())
+                    const uploadResult = await api.uploadImage('avatars', state.personal.photo.file, state.personal.employeeId);
+                    if (uploadResult) {
+                        avatarUrl = uploadResult.publicUrl;
+                        // Avatar uploaded
                     } else {
-                        alert('Onboarding submission failed: No data returned.');
+                        console.warn("Avatar upload failed, but continuing."); // Non-critical failure
                     }
-                });
+                }
+
+                // 2. Upload ID Proof if it exists
+                if (state.personal && state.personal.idProof?.file) {
+                    // Uploading ID Proof
+                    const uploadResult = await api.uploadDocument(state.personal.idProof.file);
+                    if (uploadResult) {
+                        idProofUrl = uploadResult.url;
+                        // ID Proof uploaded
+                    } else {
+                        console.warn("ID Proof upload failed, but continuing."); // Non-critical failure
+                    }
+                }
+
+                // 3. Upload Bank Proof if it exists
+                if (state.bank && state.bank.bankProof?.file) {
+                    // Uploading Bank Proof
+                    const uploadResult = await api.uploadDocument(state.bank.bankProof.file);
+                    if (uploadResult) {
+                        bankProofUrl = uploadResult.url;
+                        // Bank Proof uploaded
+                    } else {
+                        console.warn("Bank Proof upload failed, but continuing."); // Non-critical failure
+                    }
+                }
+
+                // 4. Upload GMC Policy Copy if it exists
+                if (state.gmc && state.gmc.gmcPolicyCopy?.file) {
+                    // Uploading GMC Policy Copy
+                    const uploadResult = await api.uploadDocument(state.gmc.gmcPolicyCopy.file);
+                    if (uploadResult) {
+                        gmcPolicyCopyUrl = uploadResult.url;
+                        // GMC Policy Copy uploaded
+                    } else {
+                        console.warn("GMC Policy Copy upload failed, but continuing."); // Non-critical failure
+                    }
+                }
+
+                // 5. Upload Education Documents
+                const updatedEducation = await Promise.all(state.education.map(async (edu: EducationRecord) => {
+                    if (edu.document?.file) {
+                        // Uploading education document
+                        try {
+                            const uploadResult = await api.uploadDocument(edu.document.file);
+                            if (uploadResult) {
+                                return { ...edu, document: { ...edu.document, url: uploadResult.url } };
+                            }
+                        } catch (e) {
+                            console.warn(`Education document upload failed for ${edu.id}:`, e);
+                        }
+                    }
+                    return edu;
+                }));
+
+
+                // 6. Prepare the final submission payload (mapping frontend fields to DB jsonb structure)
+                const submissionPayload = {
+                    id: crypto.randomUUID(), // Generate client-side ID to fix missing default value in DB
+                    user_id: user.id, // Use the actual authenticated user ID
+                    status: 'Draft',
+                    portal_sync_status: 'Pending', // Default status
+                    organization_id: state.organization.organizationId,
+                    organization_name: state.organization.organizationName,
+                    enrollment_date: state.organization.joiningDate, // Assuming joiningDate is enrollment_date
+                    requires_manual_verification: false, // Default
+                    forms_generated: false, // Default
+
+                    // Store complex objects as JSONB - cast to any explicitly to satisfy Supabase Json type definition
+                    personal: {
+                        ...state.personal,
+                        photo: avatarUrl, // Store URL instead of UploadedFile object
+                        idProof: idProofUrl, // Store URL
+                        verifiedStatus: state.personal.verifiedStatus || {}, // Ensure proper type
+                    } as any,
+                    address: state.address as any,
+                    family: state.family as any,
+                    education: updatedEducation.map((e: EducationRecord) => ({ ...e, document: e.document?.url || null })) as any, // Store URL
+                    bank: {
+                        ...state.bank,
+                        bankProof: bankProofUrl, // Store URL
+                    } as any,
+                    uan: { uanNumber: state.personal.uanNumber, hasPreviousPf: state.personal.hasPreviousPf, pfNumber: state.personal.pfNumber } as any, // Extract UAN details
+                    esi: state.esi as any,
+                    gmc: {
+                        ...state.gmc,
+                        gmcPolicyCopy: gmcPolicyCopyUrl, // Store URL
+                    } as any,
+                    // Required fields for EnrollmentInsert
+                    organization: state.organization as any,
+                    uniforms: [] as any,
+                    biometrics: {} as any,
+                    salary_change_request: null,
+                    verification_usage: {} as any,
+                };
+
+                // Final submission payload ready
+                const submissionResult = await api.createEnrollment(submissionPayload);
+
+                if (submissionResult) {
+                    // Reset the form
+                    set((s) => { s.reset() });
+                    return { success: true };
+                } else {
+                    return { success: false, error: 'No data returned from submission' };
+                }
             } catch (error: any) {
                 console.error("Onboarding submission failed:", error);
-                alert(`Onboarding submission failed: ${error.message || 'Unknown error'}`);
+                return { success: false, error: error.message || 'Unknown error' };
             }
         },
         updateOrganization: (updates) => {

@@ -70,12 +70,16 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ isCollapsed, onLinkClic
                 to={link.to}
                 onClick={onLinkClick}
                 className={({ isActive }) =>
-                    `layout-navLink ${isActive ? 'bg-sky-400 text-white' : ''} ${isCollapsed ? 'layout-navLinkCollapsed' : ''}`
+                    `layout-navLink ${isActive ? 'bg-sky-400 text-white font-semibold' : 'font-medium hover:font-semibold'} ${isCollapsed ? 'layout-navLinkCollapsed' : ''}`
                 }
                 title={isCollapsed ? link.label : undefined}
             >
                 <link.icon className="layout-navIcon" />
-                {!isCollapsed && <span>{link.label}</span>}
+                {!isCollapsed && (
+                    <span className="text-[15px] leading-tight transition-all duration-200">
+                        {link.label}
+                    </span>
+                )}
             </NavLink>
         ))
     );
@@ -87,9 +91,11 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ isCollapsed, onLinkClic
             </div>
 
             {secondaryLinks.length > 0 && (
-                <div className="layout-navSection">
-                    {renderNavLinks(secondaryLinks)}
-                </div>
+                <>
+                    <div className="layout-navSection">
+                        {renderNavLinks(secondaryLinks)}
+                    </div>
+                </>
             )}
         </nav>
     );

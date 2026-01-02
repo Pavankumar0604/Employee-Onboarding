@@ -4,6 +4,7 @@ import Button from '../../components/ui/Button';
 import Select from '../../components/ui/Select'; // Import custom Select component
 import { useNavigate } from 'react-router-dom';
 import { Search, UserPlus, Eye, FileText } from 'lucide-react';
+import PageHeader from '../../components/layout/PageHeader';
 
 // Mock Data (as requested by user to be in this file)
 const MOCK_ORGANIZATIONS = [
@@ -35,7 +36,7 @@ const SiteDashboard: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [selectedOrgId, setSelectedOrgId] = useState(MOCK_ORGANIZATIONS[0].value); // Default to TATA Power
-    
+
     const navigate = useNavigate();
 
     const currentOrgName = useMemo(() => {
@@ -62,7 +63,7 @@ const SiteDashboard: React.FC = () => {
         }
         return filtered;
     }, [submissions, statusFilter, searchTerm]);
-    
+
     const filterTabs = ['All', 'Pending', 'Verified', 'Rejected'];
 
     const handleNewEnrollment = useCallback(() => {
@@ -82,62 +83,53 @@ const SiteDashboard: React.FC = () => {
 
 
     return (
-        <div className="h-full flex flex-col bg-gray-50 p-6">
-            
-            {/* Main Card Container */}
-            <div className="bg-white rounded-xl shadow-lg p-8">
-                
-                {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-start justify-between mb-6">
-                    <div className="mb-4 md:mb-0">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-1">Site Dashboard</h1>
-                        <p className="text-base text-gray-600">
-                            Viewing submissions for site: <span className="font-bold text-sky-700">{currentOrgName}</span>
-                        </p>
+        <>
+            <PageHeader
+                title="Site Dashboard"
+                subtitle={`Viewing submissions for ${currentOrgName}`}
+                secondaryActions={
+                    <div className="flex items-center gap-3">
+                        <Select
+                            id="org-selector"
+                            value={selectedOrgId}
+                            onChange={(e) => setSelectedOrgId(e.target.value)}
+                            options={MOCK_ORGANIZATIONS}
+                            className="w-48"
+                        />
                     </div>
-                    
-                    <div className="flex items-center space-x-4">
-                        {/* Site Selector Dropdown */}
-                        <div className="w-48">
-                            <Select
-                                id="org-selector"
-                                value={selectedOrgId}
-                                onChange={(e) => setSelectedOrgId(e.target.value)}
-                                options={MOCK_ORGANIZATIONS}
-                                className="py-2 px-3 border-gray-300 rounded-lg text-sm shadow-sm"
-                            />
-                        </div>
+                }
+                primaryAction={
+                    <Button
+                        onClick={handleNewEnrollment}
+                        className="flex items-center gap-2"
+                    >
+                        <UserPlus className="h-4 w-4" />
+                        New Enrollment
+                    </Button>
+                }
+            />
 
-                        {/* New Enrollment Button */}
-                        <Button 
-                            onClick={handleNewEnrollment} 
-                            className="bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md flex items-center"
-                        >
-                            <UserPlus className="mr-2 h-4 w-4" />
-                            New Enrollment
-                        </Button>
-                    </div>
-                </div>
+            {/* Main Card Container */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
 
                 {/* Filter/Search Section */}
                 <div className="flex items-center justify-between border-b border-gray-200 mb-4">
                     {/* Tabs */}
                     <div className="flex space-x-6">
                         {filterTabs.map(tab => (
-                             <button
+                            <button
                                 key={tab}
                                 onClick={() => setStatusFilter(tab.toLowerCase())}
-                                className={`${
-                                statusFilter === tab.toLowerCase()
-                                    ? 'border-b-2 border-sky-400 text-sky-700'
-                                    : 'border-b-2 border-transparent text-gray-500 hover:text-gray-700'
-                                } whitespace-nowrap py-3 px-1 font-medium text-base capitalize transition duration-150 ease-in-out`}
-                             >
+                                className={`${statusFilter === tab.toLowerCase()
+                                        ? 'border-b-2 border-sky-400 text-sky-700'
+                                        : 'border-b-2 border-transparent text-gray-500 hover:text-gray-700'
+                                    } whitespace-nowrap py-3 px-1 font-medium text-base capitalize transition duration-150 ease-in-out`}
+                            >
                                 {tab}
-                             </button>
+                            </button>
                         ))}
                     </div>
-                    
+
                     {/* Search Input */}
                     <div className="relative w-64 mb-2">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -162,7 +154,7 @@ const SiteDashboard: React.FC = () => {
                 {/* Table Content */}
                 <div className="divide-y divide-gray-100">
                     {filteredSubmissions.length === 0 ? (
-                         <div className="text-center py-16 text-gray-500">
+                        <div className="text-center py-16 text-gray-500">
                             <p>No submissions found for this site or filter.</p>
                         </div>
                     ) : (
@@ -173,31 +165,31 @@ const SiteDashboard: React.FC = () => {
                                     <p className="font-semibold text-gray-900">{s.name}</p>
                                     <p className="text-sm text-gray-500">{s.employeeId}</p>
                                 </div>
-                                
+
                                 {/* Status */}
                                 <div className="col-span-1 flex items-center">
                                     <StatusChip status={s.status as 'pending' | 'verified' | 'rejected'} />
                                 </div>
-                                
+
                                 {/* Portal Sync */}
                                 <div className="col-span-1 flex items-center text-gray-500">
                                     {s.portalSync}
                                 </div>
-                                
+
                                 {/* Actions */}
                                 <div className="col-span-1 flex items-center justify-end space-x-3">
                                     {/* View/Edit Details Icon Button */}
-                                    <button 
-                                        onClick={() => handleViewDetails(s.id)} 
+                                    <button
+                                        onClick={() => handleViewDetails(s.id)}
                                         title="View/Edit Details"
                                         className="text-gray-500 hover:text-sky-700 transition duration-150 ease-in-out p-1 rounded-full"
                                     >
                                         <Eye className="h-5 w-5" />
                                     </button>
-                                    
+
                                     {/* Download Forms Icon Button */}
-                                    <button 
-                                        onClick={() => handleDownloadForms(s.id)} 
+                                    <button
+                                        onClick={() => handleDownloadForms(s.id)}
                                         title="Download Forms"
                                         className="text-gray-500 hover:text-sky-700 transition duration-150 ease-in-out p-1 rounded-full"
                                     >
@@ -209,21 +201,7 @@ const SiteDashboard: React.FC = () => {
                     )}
                 </div>
             </div>
-            
-            {/* Scroll buttons (as seen in the image, but likely part of a layout component, adding them here for visual match) */}
-            <div className="fixed bottom-8 right-8 flex flex-col space-y-2">
-                <button className="bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-gray-900 border border-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-                    </svg>
-                </button>
-                <button className="bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-gray-900 border border-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                </button>
-            </div>
-        </div>
+        </>
     );
 };
 

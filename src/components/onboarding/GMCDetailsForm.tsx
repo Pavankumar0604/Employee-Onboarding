@@ -9,24 +9,29 @@ import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 
 const validationSchema = yup.object({
-  isOptedIn: yup.boolean().nullable().required('Please select an option'),
+  // Accept both string (from form) and boolean (from store) to be safe
+  isOptedIn: yup.mixed().test(
+    'is-opted-in-check',
+    'Please select an option',
+    val => val === true || val === false || val === 'true' || val === 'false'
+  ).required('Please select an option'),
   optOutReason: yup.string().when('isOptedIn', {
-    is: false,
+    is: (val: any) => val === false || val === 'false',
     then: schema => schema.required('Reason for opting out is required'),
     otherwise: schema => schema.optional(),
   }),
   policyAmount: yup.string().when('isOptedIn', {
-    is: true,
+    is: (val: any) => val === true || val === 'true',
     then: schema => schema.oneOf(['1L', '2L', '']).required('Policy amount is required'),
     otherwise: schema => schema.optional(),
   }),
   nomineeName: yup.string().when('isOptedIn', {
-    is: true,
+    is: (val: any) => val === true || val === 'true',
     then: schema => schema.required('Nominee name is required'),
     otherwise: schema => schema.optional(),
   }),
   nomineeRelation: yup.string().when('isOptedIn', {
-    is: true,
+    is: (val: any) => val === true || val === 'true',
     then: schema => schema.oneOf(['Spouse', 'Child', 'Father', 'Mother', '']).required('Nominee relation is required'),
     otherwise: schema => schema.optional(),
   }),
@@ -58,13 +63,21 @@ const GMCDetailsForm = forwardRef<FormHandle, GMCDetailsFormProps>(({ onValidate
 
   const { salaryThreshold, defaultPolicySingle, defaultPolicyMarried } = useEnrollmentRulesStore();
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<GmcDetails>({
+  // Cast defaultValues to any because store has boolean but form works with strings for radios
+  const defaultValues = {
+    ...gmc,
+    isOptedIn: gmc.isOptedIn === null ? null : String(gmc.isOptedIn),
+  };
+
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<GmcDetails | any>({
     resolver: yupResolver(validationSchema) as any,
-    defaultValues: gmc,
+    defaultValues: defaultValues,
   });
 
   const currentPolicyInForm = watch('policyAmount');
   const isGmcApplicable = personalSalary != null && personalSalary > salaryThreshold;
+
+  const isOptedInValue = watch('isOptedIn') === 'true';
 
   useEffect(() => {
     if (!isGmcApplicable) {
@@ -77,17 +90,26 @@ const GMCDetailsForm = forwardRef<FormHandle, GMCDetailsFormProps>(({ onValidate
     const effectiveDefault = maritalStatus === 'Married' ? defaultPolicyMarried : defaultPolicySingle;
 
     if (currentPolicyInForm !== effectiveDefault) {
-      setValue('policyAmount', effectiveDefault as GmcDetails['policyAmount']);
+      setValue('policyAmount', effectiveDefault);
     }
   }, [isGmcApplicable, maritalStatus, defaultPolicySingle, defaultPolicyMarried, currentPolicyInForm, setValue]);
 
-  const onSubmit: SubmitHandler<GmcDetails> = (formData) => {
-    updateGmc(formData);
+  const onSubmit: SubmitHandler<any> = (formData) => {
+    // Convert string "true"/"false" back to boolean for the store
+    const finalData = {
+      ...formData,
+      isOptedIn: formData.isOptedIn === 'true',
+    };
+    updateGmc(finalData);
     if (onValidated) onValidated();
   };
 
   useImperativeHandle(ref, () => ({
     submit: () => {
+      if (!isGmcApplicable) {
+        if (onValidated) onValidated();
+        return;
+      }
       handleSubmit(onSubmit)();
     }
   }));
@@ -116,11 +138,12 @@ const GMCDetailsForm = forwardRef<FormHandle, GMCDetailsFormProps>(({ onValidate
             <span className="text-gray-700 font-medium">Opt-out of GMC</span>
           </label>
         </div>
-        {errors.isOptedIn && <p className="text-red-500 text-sm mt-1">{errors.isOptedIn.message}</p>}
+        {errors.isOptedIn && <p className="text-red-500 text-sm mt-1">{errors.isOptedIn.message as string}</p>}
 
-        {watch('isOptedIn') === false && (
+        {/* Use normalized boolean value for conditional rendering */}
+        {!isOptedInValue && watch('isOptedIn') !== null && watch('isOptedIn') !== undefined && String(watch('isOptedIn')) === 'false' && (
           <div className="space-y-4 pt-4 border-t border-gray-200">
-            <Input label="Reason for Opting Out" {...register('optOutReason')} error={errors.optOutReason?.message} />
+            <Input label="Reason for Opting Out" {...register('optOutReason')} error={errors.optOutReason?.message as string} />
             <div className="bg-blue-50 p-4 rounded-md">
               <h4 className="font-semibold text-blue-900 mb-2">Alternate Insurance Details (Optional)</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -137,7 +160,7 @@ const GMCDetailsForm = forwardRef<FormHandle, GMCDetailsFormProps>(({ onValidate
           </div>
         )}
 
-        {watch('isOptedIn') === true && (
+        {isOptedInValue && (
           <div className="space-y-4 pt-4 border-t border-gray-200">
             <div className="bg-green-50 p-4 rounded-md">
               <p className="text-green-800">
@@ -145,7 +168,7 @@ const GMCDetailsForm = forwardRef<FormHandle, GMCDetailsFormProps>(({ onValidate
               </p>
             </div>
 
-            <Input label="Nominee Name" {...register('nomineeName')} error={errors.nomineeName?.message} />
+            <Input label="Nominee Name" {...register('nomineeName')} error={errors.nomineeName?.message as string} />
             <Select
               label="Nominee Relationship"
               options={[
@@ -155,7 +178,7 @@ const GMCDetailsForm = forwardRef<FormHandle, GMCDetailsFormProps>(({ onValidate
                 { value: 'Mother', label: 'Mother' },
               ]}
               {...register('nomineeRelation')}
-              error={errors.nomineeRelation?.message}
+              error={errors.nomineeRelation?.message as string}
             />
           </div>
         )}

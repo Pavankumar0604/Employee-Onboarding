@@ -3,12 +3,13 @@ import { useSettingsStore } from '../../store/settingsStore';
 import type { Holiday } from '../../types/attendance';
 import { format } from 'date-fns';
 import { api } from '../../services/api';
-import { Settings, Clock, Bell, Calendar, Plus, Trash2, Users } from 'lucide-react';
+import { Clock, Bell, Calendar, Plus, Trash2, Users } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import DatePicker from '../../components/ui/DatePicker';
 import Toast from '../../components/ui/Toast';
 import Input from '../../components/ui/Input';
 import Checkbox from '../../components/ui/Checkbox';
+import PageHeader from '../../components/layout/PageHeader';
 
 // --- Date Helper Functions (Kept for potential future use or compatibility) ---
 
@@ -66,8 +67,8 @@ const AttendancePage: FC = () => {
                 <Icon className="h-5 w-5 text-sky-700" />
             </div>
             <div>
-                <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-                {description && <p className="text-sm text-gray-500 mt-1">{description}</p>}
+                <h2 className="text-heading-m text-gray-800">{title}</h2>
+                {description && <p className="text-body-small text-gray-500 mt-1">{description}</p>}
             </div>
         </div>
     );
@@ -139,14 +140,15 @@ const AttendancePage: FC = () => {
         <div className="p-6 md:p-10 bg-gray-50 min-h-screen">
             <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg">
 
-                {/* Header */}
-                <div className="mb-8 pb-6 border-b border-gray-200">
-                    <SectionHeader
-                        title="Attendance & Leave Rules"
-                        description="Set company-wide rules for attendance and leave calculation."
-                        icon={Settings}
-                    />
-                </div>
+                <PageHeader
+                    title="Attendance & Leave Rules"
+                    subtitle="Set company-wide rules for attendance and leave calculation"
+                    primaryAction={
+                        <Button onClick={handleSaveRules} disabled={isSaving} className="bg-sky-400 hover:bg-sky-500 text-white px-6 py-3">
+                            {isSaving ? 'Saving...' : 'Save Rules'}
+                        </Button>
+                    }
+                />
 
                 {/* Work Hours Section */}
                 <div className="mb-8">
@@ -281,13 +283,6 @@ const AttendancePage: FC = () => {
                             ))
                         )}
                     </div>
-                </div>
-
-                {/* Save Button (Footer) */}
-                <div className="pt-6 border-t border-gray-200 flex justify-end">
-                    <Button onClick={handleSaveRules} disabled={isSaving} className="bg-sky-400 hover:bg-sky-500 text-white px-6 py-3">
-                        {isSaving ? 'Saving...' : 'Save Rules'}
-                    </Button>
                 </div>
 
             </div>

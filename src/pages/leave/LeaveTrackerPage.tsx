@@ -13,7 +13,8 @@ import { format, differenceInCalendarDays, isSameDay } from 'date-fns';
 import DatePicker from '../../components/ui/DatePicker';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useSettingsStore } from '../../store/settingsStore';
-import UploadDocument from '../../components/ui/UploadDocument'; // Corrected path based on file structure
+import UploadDocument from '../../components/ui/UploadDocument';
+import PageHeader from '../../components/layout/PageHeader';
 
 // --- Reusable Components ---
 
@@ -55,7 +56,7 @@ const getLeaveValidationSchema = (threshold: number) => yup.object({
     leaveType: yup.string<LeaveType>().oneOf(['Earned', 'Sick', 'Floating']).required('Leave type is required'),
     startDate: yup.string().required('Start date is required'),
     endDate: yup.string().required('End date is required')
-        .test('is-after-start', 'End date must be on or after start date', function(value) {
+        .test('is-after-start', 'End date must be on or after start date', function (value) {
             const { startDate } = this.parent;
             if (!startDate || !value) return true;
             return new Date(value.replace(/-/g, '/')) >= new Date(startDate.replace(/-/g, '/'));
@@ -79,7 +80,7 @@ const LeaveRequestForm: React.FC<{
     onSuccess: () => void;
     user: { id: string, name: string };
     isMobile: boolean;
-    setToast: (toast: { message: string, type: 'success' | 'error'} | null) => void;
+    setToast: (toast: { message: string, type: 'success' | 'error' } | null) => void;
 }> = ({ isOpen, onClose, onSuccess, user: _user, isMobile, setToast }) => {
     const { attendance: { sickLeaveCertDays } } = useSettingsStore();
     const validationSchema = useMemo(() => getLeaveValidationSchema(sickLeaveCertDays), [sickLeaveCertDays]);
@@ -97,7 +98,7 @@ const LeaveRequestForm: React.FC<{
         if (!watchStartDate || !watchEndDate) return false;
         return isSameDay(new Date(watchStartDate.replace(/-/g, '/')), new Date(watchEndDate.replace(/-/g, '/')));
     }, [watchStartDate, watchEndDate]);
-    
+
     const showHalfDayOption = isSingleDay && watchLeaveType === 'Earned';
     const showDoctorCertUpload = useMemo(() => {
         if (watchLeaveType !== 'Sick' || !watchStartDate || !watchEndDate) return false;
@@ -112,10 +113,10 @@ const LeaveRequestForm: React.FC<{
             // await api.submitLeaveRequest({ ...formData, userId: _user.id, userName: _user.name });
             console.log('Submitting leave request:', formData);
             await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-            
+
             // Mock success for now
             onSuccess();
-        } catch(err) {
+        } catch (err) {
             setToast({ message: 'Failed to submit leave request.', type: 'error' });
         }
     };
@@ -126,7 +127,7 @@ const LeaveRequestForm: React.FC<{
         <div className={`fixed inset-0 z-40 ${isMobile ? 'bg-white flex flex-col' : 'flex items-center justify-center bg-black/50 p-4'}`}>
             <div className={`w-full ${isMobile ? 'flex flex-col h-full bg-white' : 'max-w-2xl bg-white rounded-xl shadow-2xl'}`}>
                 <header className={`p-4 flex-shrink-0 flex items-center gap-4 ${isMobile ? 'fo-mobile-header' : 'border-b border-border'}`}>
-                    <Button variant="icon" onClick={onClose} aria-label="Go back"><ArrowLeft className="h-6 w-6 text-primary-text"/></Button>
+                    <Button variant="icon" onClick={onClose} aria-label="Go back"><ArrowLeft className="h-6 w-6 text-primary-text" /></Button>
                     <h1 className="text-xl font-bold text-primary-text">{isMobile ? 'New Leave Request' : 'Submit a New Leave Request'}</h1>
                 </header>
                 <form id="leave-form" onSubmit={handleSubmit(onSubmit)} className="flex-grow overflow-y-auto p-6 space-y-6">
@@ -140,10 +141,10 @@ const LeaveRequestForm: React.FC<{
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <Controller name="startDate" control={control} render={({ field }) => (
                             <DatePicker label="Start Date" id="startDate" value={field.value} onChange={field.onChange} error={errors.startDate?.message} />
-                        )}/>
+                        )} />
                         <Controller name="endDate" control={control} render={({ field }) => (
                             <DatePicker label="End Date" id="endDate" value={field.value} onChange={field.onChange} error={errors.endDate?.message} />
-                        )}/>
+                        )} />
                     </div>
                     {showHalfDayOption && (
                         <Controller name="dayOption" control={control} render={({ field }) => (
@@ -152,15 +153,15 @@ const LeaveRequestForm: React.FC<{
                             </Select>
                         )} />
                     )}
-                     <div>
+                    <div>
                         <label className="block text-sm font-medium text-muted mb-1">Reason</label>
-                        <textarea {...register('reason')} rows={4} placeholder="Provide a detailed reason for your leave..." className={`mt-1 form-textarea w-full p-3 border rounded-lg focus:ring-2 focus:ring-accent transition-colors ${errors.reason ? 'border-red-500' : 'border-border bg-input'}`}/>
+                        <textarea {...register('reason')} rows={4} placeholder="Provide a detailed reason for your leave..." className={`mt-1 form-textarea w-full p-3 border rounded-lg focus:ring-2 focus:ring-accent transition-colors ${errors.reason ? 'border-red-500' : 'border-border bg-input'}`} />
                         {errors.reason && <p className="mt-1 text-xs text-red-600">{errors.reason.message}</p>}
                     </div>
                     {showDoctorCertUpload && (
                         <Controller name="doctorCertificate" control={control} render={({ field, fieldState }) => (
-                            <UploadDocument label={`Doctor's Certificate (Required)`} file={field.value} onFileChange={field.onChange} error={fieldState.error?.message} allowCapture/>
-                        )}/>
+                            <UploadDocument label={`Doctor's Certificate (Required)`} file={field.value} onFileChange={field.onChange} error={fieldState.error?.message} allowCapture />
+                        )} />
                     )}
                 </form>
                 <footer className={`p-4 flex-shrink-0 flex items-center justify-end gap-3 ${isMobile ? 'shadow-top' : 'border-t border-border'}`}>
@@ -211,7 +212,7 @@ const LeaveTrackerPage: React.FC = () => {
             //         status: filter === 'all' ? undefined : filter
             //     })
             // ]);
-            
+
             // Mock data fetching
             await new Promise(resolve => setTimeout(resolve, 500));
             const filteredRequests = mockLeaveRequests.filter(req => filter === 'all' || req.status === filter);
@@ -228,7 +229,7 @@ const LeaveTrackerPage: React.FC = () => {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
-    
+
     const handleFormSuccess = () => {
         setToast({ message: 'Leave request submitted successfully!', type: 'success' });
         setIsFormOpen(false);
@@ -237,7 +238,7 @@ const LeaveTrackerPage: React.FC = () => {
 
     const formatTabName = (tab: string) => tab.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     const filterTabs: Array<LeaveRequestStatus | 'all'> = ['all', 'pending_manager_approval', 'pending_hr_confirmation', 'approved', 'rejected'];
-    
+
     const balanceCards = balance ? [
         { title: 'Earned Leave', value: `${balance.earnedTotal - balance.earnedUsed} / ${balance.earnedTotal}`, icon: Sun },
         { title: 'Sick Leave', value: `${balance.sickTotal - balance.sickUsed} / ${balance.sickTotal}`, icon: Moon },
@@ -245,32 +246,37 @@ const LeaveTrackerPage: React.FC = () => {
     ] : [];
 
     return (
-        <div className="p-4 md:p-8 space-y-8 bg-background min-h-screen">
+        <>
             {toast && <Toast message={toast.message} type={toast.type} onDismiss={() => setToast(null)} />}
             {user && <LeaveRequestForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSuccess={handleFormSuccess} user={user} isMobile={isMobile} setToast={setToast} />}
-            
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h2 className="text-3xl font-extrabold text-primary-text">Leave Tracker</h2>
-                {!isMobile && (
-                    <Button onClick={() => setIsFormOpen(true)}><Plus className="mr-2 h-4 w-4"/> New Request</Button>
-                )}
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <PageHeader
+                title="Leave Tracker"
+                subtitle="Manage your leave requests and view balance"
+                primaryAction={
+                    !isMobile ? (
+                        <Button onClick={() => setIsFormOpen(true)}>
+                            <Plus className="mr-2 h-4 w-4" /> New Request
+                        </Button>
+                    ) : undefined
+                }
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {balanceCards.map(b => <LeaveBalanceCard key={b.title} {...b} />)}
             </div>
 
             {isMobile && (
                 <div className="my-4">
                     <Button onClick={() => setIsFormOpen(true)} size="lg" className="w-full justify-center">
-                        <Plus className="mr-2 h-5 w-5"/> New Request
+                        <Plus className="mr-2 h-5 w-5" /> New Request
                     </Button>
                 </div>
             )}
 
             <div className="bg-card p-0 md:p-6 rounded-xl shadow-lg">
-                 <div className="mb-6 p-4 md:p-0">
-                     <div className="w-full sm:w-auto md:border-b border-border">
+                <div className="mb-6 p-4 md:p-0">
+                    <div className="w-full sm:w-auto md:border-b border-border">
                         <nav className="flex flex-col md:flex-row md:space-x-6 md:overflow-x-auto space-y-1 md:space-y-0" aria-label="Tabs">
                             {filterTabs.map(tab => (
                                 <button
@@ -278,9 +284,9 @@ const LeaveTrackerPage: React.FC = () => {
                                     onClick={() => setFilter(tab)}
                                     className={`whitespace-nowrap font-semibold text-sm rounded-lg md:rounded-none w-full md:w-auto text-left md:text-center px-4 py-3 md:px-1 md:py-3 md:bg-transparent md:border-b-2 transition-colors
                                     ${filter === tab
-                                        ? 'bg-accent-light text-accent-dark md:border-accent'
-                                        : 'text-muted hover:bg-accent-light hover:text-accent-dark md:border-transparent md:hover:border-accent'
-                                    }`}
+                                            ? 'bg-accent-light text-accent-dark md:border-accent'
+                                            : 'text-muted hover:bg-accent-light hover:text-accent-dark md:border-transparent md:hover:border-accent'
+                                        }`}
                                 >
                                     {formatTabName(tab)}
                                 </button>
@@ -288,7 +294,7 @@ const LeaveTrackerPage: React.FC = () => {
                         </nav>
                     </div>
                 </div>
-                
+
                 <div className="overflow-x-auto">
                     <table className="min-w-full responsive-table">
                         <thead>
@@ -300,8 +306,8 @@ const LeaveTrackerPage: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
-                             {isLoading ? (
-                                <tr><td colSpan={4} className="text-center py-10 text-muted flex items-center justify-center gap-2"><Loader2 className="h-5 w-5 animate-spin"/> Loading Requests...</td></tr>
+                            {isLoading ? (
+                                <tr><td colSpan={4} className="text-center py-10 text-muted flex items-center justify-center gap-2"><Loader2 className="h-5 w-5 animate-spin" /> Loading Requests...</td></tr>
                             ) : requests.length === 0 ? (
                                 <tr><td colSpan={4} className="text-center py-10 text-muted">No requests found for this filter.</td></tr>
                             ) : (
@@ -318,7 +324,7 @@ const LeaveTrackerPage: React.FC = () => {
                     </table>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

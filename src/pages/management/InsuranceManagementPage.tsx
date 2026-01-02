@@ -5,11 +5,12 @@ import { Plus, Edit, FileText, Shield } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import Toast from '../../components/ui/Toast';
 import InsuranceForm from '../../components/hr/InsuranceForm.tsx';
+import PageHeader from '../../components/layout/PageHeader';
 
 const TabButton: React.FC<{ icon: React.ElementType, label: string, isActive: boolean, onClick: () => void }> = ({ icon: Icon, label, isActive, onClick }) => {
     const activeClasses = 'text-sky-700 border-sky-400';
     const inactiveClasses = 'text-gray-500 border-transparent hover:text-sky-700';
-    
+
     return (
         <button
             onClick={onClick}
@@ -28,7 +29,7 @@ const InsuranceManagement: React.FC = () => {
     const [currentInsurance, setCurrentInsurance] = useState<Insurance | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
     const [activeTab, setActiveTab] = useState<'policies' | 'insurance'>('policies');
-    
+
     const fetchInsurances = useCallback(async () => {
         setIsLoading(true);
         try {
@@ -48,7 +49,7 @@ const InsuranceManagement: React.FC = () => {
     useEffect(() => {
         fetchInsurances();
     }, [fetchInsurances]);
-    
+
     const handleSave = async (data: Omit<Insurance, 'id'>) => {
         try {
             // Map camelCase fields to snake_case/DB fields for API payload
@@ -71,7 +72,7 @@ const InsuranceManagement: React.FC = () => {
             setIsFormOpen(false);
             fetchInsurances();
         } catch (error) {
-             setToast({ message: 'Failed to save insurance.', type: 'error' });
+            setToast({ message: 'Failed to save insurance.', type: 'error' });
         }
     };
 
@@ -82,14 +83,17 @@ const InsuranceManagement: React.FC = () => {
     ];
 
     return (
-        <div className="p-6 sm:p-8">
+        <>
             {toast && <Toast message={toast.message} type={toast.type} onDismiss={() => setToast(null)} />}
             {isFormOpen && <InsuranceForm onSave={handleSave} onClose={() => setIsFormOpen(false)} initialData={currentInsurance} />}
 
-            <h1 className="text-3xl font-bold mb-6 text-foreground">Policies & Insurance</h1>
+            <PageHeader
+                title="Policies & Insurance"
+                subtitle="Manage company policies and employee insurance plans"
+            />
 
             {/* Tab Navigation */}
-            <div className="flex border-b border-border mb-8">
+            <div className="flex border-b border-border mb-6">
                 <TabButton
                     icon={FileText}
                     label="Company Policies"
@@ -105,11 +109,11 @@ const InsuranceManagement: React.FC = () => {
             </div>
 
             {activeTab === 'policies' && (
-                <div className="bg-card p-6 sm:p-8 rounded-xl shadow-card">
+                <div className="bg-card p-6 rounded-xl shadow-lg">
                     {/* Policy Management Header */}
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-bold text-foreground">Policy Management</h2>
-                        <Button onClick={() => { setCurrentInsurance(null); setIsFormOpen(true); }} className="bg-sky-400 hover:bg-sky-500 text-white">
+                        <h3 className="text-heading-s font-semibold text-foreground">Policy Management</h3>
+                        <Button onClick={() => { setCurrentInsurance(null); setIsFormOpen(true); }}>
                             <Plus className="mr-2 h-4 w-4" /> Add Policy
                         </Button>
                     </div>
@@ -118,9 +122,9 @@ const InsuranceManagement: React.FC = () => {
                         <table className="min-w-full divide-y divide-border">
                             <thead className="bg-page">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Policy Name</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th className="px-6 py-3 text-left text-label uppercase tracking-wider">Policy Name</th>
+                                    <th className="px-6 py-3 text-left text-label uppercase tracking-wider">Description</th>
+                                    <th className="px-6 py-3 text-left text-label uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-card divide-y divide-border">
@@ -140,11 +144,11 @@ const InsuranceManagement: React.FC = () => {
             )}
 
             {activeTab === 'insurance' && (
-                <div className="bg-card p-6 sm:p-8 rounded-xl shadow-card">
+                <div className="bg-card p-6 rounded-xl shadow-lg">
                     {/* Insurance Management Header */}
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-bold text-foreground">Insurance Management</h2>
-                        <Button onClick={() => { setCurrentInsurance(null); setIsFormOpen(true); }} className="bg-sky-400 hover:bg-sky-500 text-white">
+                        <h3 className="text-heading-s font-semibold text-foreground">Insurance Management</h3>
+                        <Button onClick={() => { setCurrentInsurance(null); setIsFormOpen(true); }}>
                             <Plus className="mr-2 h-4 w-4" /> Add Insurance
                         </Button>
                     </div>
@@ -153,11 +157,11 @@ const InsuranceManagement: React.FC = () => {
                         <table className="min-w-full divide-y divide-border">
                             <thead className="bg-page">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Policy Number</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valid Till</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th className="px-6 py-3 text-left text-label uppercase tracking-wider">Type</th>
+                                    <th className="px-6 py-3 text-left text-label uppercase tracking-wider">Provider</th>
+                                    <th className="px-6 py-3 text-left text-label uppercase tracking-wider">Policy Number</th>
+                                    <th className="px-6 py-3 text-left text-label uppercase tracking-wider">Valid Till</th>
+                                    <th className="px-6 py-3 text-left text-label uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-card divide-y divide-border">
@@ -183,7 +187,7 @@ const InsuranceManagement: React.FC = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

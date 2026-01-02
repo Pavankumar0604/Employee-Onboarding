@@ -16,8 +16,8 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, Icon, iconColor, icon
         <Icon size={24} className={iconColor} />
       </div>
       <div>
-        <p className="text-sm text-gray-500 font-medium">{title}</p>
-        <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
+        <p className="text-body-small text-gray-500 font-medium">{title}</p>
+        <p className="text-heading-xl text-gray-900 mt-1">{value}</p>
       </div>
     </div>
   );

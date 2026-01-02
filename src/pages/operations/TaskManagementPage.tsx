@@ -4,93 +4,94 @@ import TaskForm from '../../components/tasks/TaskForm';
 import Button from '../../components/ui/Button';
 import Select from '../../components/ui/Select';
 import Toast from '../../components/ui/Toast';
+import PageHeader from '../../components/layout/PageHeader';
 import type { Task, TaskPriority, MindmeshUser as User } from '../../types/mindmesh'; // Use Task from mindmesh.d.ts
 import { format } from 'date-fns';
 
 // Local Mock Data (aligned with mindmesh.d.ts Task structure)
 const MOCK_USERS: User[] = [
-    { id: 'u1', name: 'Alice Johnson', email: 'alice@example.com', full_name: 'Alice Johnson', role: 'admin', organizationId: null, organizationName: null, is_active: true, created_at: new Date().toISOString(), phone_number: null, photo_url: 'https://i.pravatar.cc/150?img=1' },
-    { id: 'u2', name: 'Bob Smith', email: 'bob@example.com', full_name: 'Bob Smith', role: 'site_manager', organizationId: null, organizationName: null, is_active: true, created_at: new Date().toISOString(), phone_number: null, photo_url: 'https://i.pravatar.cc/150?img=2' },
-    { id: 'u3', name: 'Charlie Brown', email: 'charlie@example.com', full_name: 'Charlie Brown', role: 'field_officer', organizationId: null, organizationName: null, is_active: true, created_at: new Date().toISOString(), phone_number: null, photo_url: 'https://i.pravatar.cc/150?img=3' },
+  { id: 'u1', name: 'Alice Johnson', email: 'alice@example.com', full_name: 'Alice Johnson', role: 'admin', organizationId: null, organizationName: null, is_active: true, created_at: new Date().toISOString(), phone_number: null, photo_url: 'https://i.pravatar.cc/150?img=1' },
+  { id: 'u2', name: 'Bob Smith', email: 'bob@example.com', full_name: 'Bob Smith', role: 'site_manager', organizationId: null, organizationName: null, is_active: true, created_at: new Date().toISOString(), phone_number: null, photo_url: 'https://i.pravatar.cc/150?img=2' },
+  { id: 'u3', name: 'Charlie Brown', email: 'charlie@example.com', full_name: 'Charlie Brown', role: 'field_officer', organizationId: null, organizationName: null, is_active: true, created_at: new Date().toISOString(), phone_number: null, photo_url: 'https://i.pravatar.cc/150?img=3' },
 ];
 
 const MOCK_TASKS: Task[] = [
-    {
-        id: 't1',
-        name: 'Review Q3 Financial Reports',
-        description: 'Analyze and finalize the quarterly financial reports for submission to the board.',
-        priority: 'High',
-        dueDate: format(new Date(2025, 10, 20), 'yyyy-MM-dd'), // Nov 20
-        assignedToId: MOCK_USERS[0].id,
-        assignedToName: MOCK_USERS[0].name,
-        status: 'in_progress',
-        escalationStatus: 'level1',
-        createdAt: new Date(2025, 10, 1).toISOString(),
-    },
-    {
-        id: 't2',
-        name: 'Update Employee Handbook',
-        description: 'Incorporate new HR policies regarding remote work and benefits.',
-        priority: 'Medium',
-        dueDate: format(new Date(2025, 10, 15), 'yyyy-MM-dd'), // Nov 15 (Overdue)
-        assignedToId: MOCK_USERS[1].id,
-        assignedToName: MOCK_USERS[1].name,
-        status: 'overdue',
-        escalationStatus: 'level2',
-        createdAt: new Date(2025, 9, 25).toISOString(),
-    },
-    {
-        id: 't3',
-        name: 'Setup new server infrastructure',
-        description: 'Configure AWS instances for the new project deployment.',
-        priority: 'High',
-        dueDate: format(new Date(2025, 10, 25), 'yyyy-MM-dd'), // Nov 25
-        assignedToId: MOCK_USERS[2].id,
-        assignedToName: MOCK_USERS[2].name,
-        status: 'pending',
-        escalationStatus: 'none',
-        createdAt: new Date(2025, 10, 10).toISOString(),
-    },
-    {
-        id: 't4',
-        name: 'Onboard new security staff',
-        description: 'Complete background checks and issue uniforms for 5 new security personnel.',
-        priority: 'Low',
-        dueDate: format(new Date(2025, 10, 18), 'yyyy-MM-dd'), // Nov 18
-        assignedToId: MOCK_USERS[0].id,
-        assignedToName: MOCK_USERS[0].name,
-        status: 'completed',
-        escalationStatus: 'none',
-        createdAt: new Date(2025, 10, 5).toISOString(),
-    },
+  {
+    id: 't1',
+    name: 'Review Q3 Financial Reports',
+    description: 'Analyze and finalize the quarterly financial reports for submission to the board.',
+    priority: 'High',
+    dueDate: format(new Date(2025, 10, 20), 'yyyy-MM-dd'), // Nov 20
+    assignedToId: MOCK_USERS[0].id,
+    assignedToName: MOCK_USERS[0].name,
+    status: 'in_progress',
+    escalationStatus: 'level1',
+    createdAt: new Date(2025, 10, 1).toISOString(),
+  },
+  {
+    id: 't2',
+    name: 'Update Employee Handbook',
+    description: 'Incorporate new HR policies regarding remote work and benefits.',
+    priority: 'Medium',
+    dueDate: format(new Date(2025, 10, 15), 'yyyy-MM-dd'), // Nov 15 (Overdue)
+    assignedToId: MOCK_USERS[1].id,
+    assignedToName: MOCK_USERS[1].name,
+    status: 'overdue',
+    escalationStatus: 'level2',
+    createdAt: new Date(2025, 9, 25).toISOString(),
+  },
+  {
+    id: 't3',
+    name: 'Setup new server infrastructure',
+    description: 'Configure AWS instances for the new project deployment.',
+    priority: 'High',
+    dueDate: format(new Date(2025, 10, 25), 'yyyy-MM-dd'), // Nov 25
+    assignedToId: MOCK_USERS[2].id,
+    assignedToName: MOCK_USERS[2].name,
+    status: 'pending',
+    escalationStatus: 'none',
+    createdAt: new Date(2025, 10, 10).toISOString(),
+  },
+  {
+    id: 't4',
+    name: 'Onboard new security staff',
+    description: 'Complete background checks and issue uniforms for 5 new security personnel.',
+    priority: 'Low',
+    dueDate: format(new Date(2025, 10, 18), 'yyyy-MM-dd'), // Nov 18
+    assignedToId: MOCK_USERS[0].id,
+    assignedToName: MOCK_USERS[0].name,
+    status: 'completed',
+    escalationStatus: 'none',
+    createdAt: new Date(2025, 10, 5).toISOString(),
+  },
 ];
 
 const getStatusColor = (status: Task['status']) => {
-    switch (status) {
-        case 'pending': return 'bg-yellow-100 text-yellow-800';
-        case 'in_progress': return 'bg-blue-100 text-blue-800';
-        case 'completed': return 'bg-sky-100 text-sky-800';
-        case 'overdue': return 'bg-red-100 text-red-800';
-        default: return 'bg-gray-100 text-gray-800';
-    }
+  switch (status) {
+    case 'pending': return 'bg-yellow-100 text-yellow-800';
+    case 'in_progress': return 'bg-blue-100 text-blue-800';
+    case 'completed': return 'bg-sky-100 text-sky-800';
+    case 'overdue': return 'bg-red-100 text-red-800';
+    default: return 'bg-gray-100 text-gray-800';
+  }
 };
 
 const getPriorityColor = (priority: TaskPriority) => {
-    switch (priority) {
-        case 'High': return 'text-red-600 font-bold';
-        case 'Medium': return 'text-yellow-600';
-        case 'Low': return 'text-sky-700';
-        default: return 'text-gray-600';
-    }
+  switch (priority) {
+    case 'High': return 'text-red-600 font-bold';
+    case 'Medium': return 'text-yellow-600';
+    case 'Low': return 'text-sky-700';
+    default: return 'text-gray-600';
+  }
 };
 
 const getEscalationColor = (escalation: Task['escalationStatus']) => {
-    switch (escalation) {
-        case 'level1': return 'text-orange-600 font-semibold';
-        case 'level2': return 'text-red-700 font-bold';
-        case 'email_sent': return 'text-red-900 font-extrabold';
-        default: return 'text-gray-500';
-    }
+  switch (escalation) {
+    case 'level1': return 'text-orange-600 font-semibold';
+    case 'level2': return 'text-red-700 font-bold';
+    case 'email_sent': return 'text-red-900 font-extrabold';
+    default: return 'text-gray-500';
+  }
 };
 
 const TaskManagementPage: React.FC = () => {
@@ -126,53 +127,49 @@ const TaskManagementPage: React.FC = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-xl min-h-screen">
-      <h1 className="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2">Task Management Dashboard</h1>
-
-      {/* Filter and Add Task Section */}
-      <div className="flex flex-wrap items-center gap-4 mb-8 bg-gray-50 p-4 rounded-lg shadow-inner">
-        {/* Filter by Status */}
-        <Select
-            label="Filter by Status"
-            options={[
-              { label: 'All Statuses', value: 'all' },
-              { label: 'Pending', value: 'pending' },
-              { label: 'In Progress', value: 'in_progress' },
-              { label: 'Completed', value: 'completed' },
-              { label: 'Overdue', value: 'overdue' },
-            ]}
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value as Task['status'] | 'all')}
-            className="w-48"
-          />
-
-        {/* Filter by Priority */}
-        <Select
-            label="Filter by Priority"
-            options={[
-              { label: 'All Priorities', value: 'all' },
-              { label: 'High', value: 'High' },
-              { label: 'Medium', value: 'Medium' },
-              { label: 'Low', value: 'Low' },
-            ]}
-            value={filterPriority}
-            onChange={(e) => setFilterPriority(e.target.value as TaskPriority | 'all')}
-            className="w-48"
-          />
-
-        {/* Filter by Assignee */}
-        <Select
-            label="Filter by Assignee"
-            options={[
-              { label: 'All Users', value: 'all' },
-              ...MOCK_USERS.map(user => ({ label: user.name, value: user.id })),
-            ]}
-            value={filterAssignee}
-            onChange={(e) => setFilterAssignee(e.target.value)}
-            className="w-48"
-          />
-
-        {/* Add Task Button - Pushed to the right */}
-        <div className="ml-auto">
+      <PageHeader
+        title="Task Management"
+        subtitle="Manage and track operational tasks across your organization"
+        secondaryActions={
+          <>
+            <Select
+              label="Status"
+              options={[
+                { label: 'All Statuses', value: 'all' },
+                { label: 'Pending', value: 'pending' },
+                { label: 'In Progress', value: 'in_progress' },
+                { label: 'Completed', value: 'completed' },
+                { label: 'Overdue', value: 'overdue' },
+              ]}
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value as Task['status'] | 'all')}
+              className="w-48"
+            />
+            <Select
+              label="Priority"
+              options={[
+                { label: 'All Priorities', value: 'all' },
+                { label: 'High', value: 'High' },
+                { label: 'Medium', value: 'Medium' },
+                { label: 'Low', value: 'Low' },
+              ]}
+              value={filterPriority}
+              onChange={(e) => setFilterPriority(e.target.value as TaskPriority | 'all')}
+              className="w-48"
+            />
+            <Select
+              label="Assignee"
+              options={[
+                { label: 'All Users', value: 'all' },
+                ...MOCK_USERS.map(user => ({ label: user.name, value: user.id })),
+              ]}
+              value={filterAssignee}
+              onChange={(e) => setFilterAssignee(e.target.value)}
+              className="w-48"
+            />
+          </>
+        }
+        primaryAction={
           <Button
             onClick={() => handleOpenModal(null)}
             className="font-semibold py-2 px-6 rounded-lg flex items-center shadow-lg transition duration-150 ease-in-out"
@@ -182,8 +179,9 @@ const TaskManagementPage: React.FC = () => {
             </svg>
             Create New Task
           </Button>
-        </div>
-      </div>
+        }
+      />
+
 
       {/* Task List Header */}
       <div className="grid grid-cols-8 gap-4 py-3 border-b-2 border-indigo-200 text-sm font-bold uppercase text-gray-600 bg-indigo-50/50 rounded-t-lg px-4">
@@ -218,8 +216,8 @@ const TaskManagementPage: React.FC = () => {
                 </span>
               </div>
               <div>
-                <Button 
-                  onClick={() => handleOpenModal(task)} 
+                <Button
+                  onClick={() => handleOpenModal(task)}
                   className="text-indigo-600 hover:text-indigo-800 p-1 text-sm font-medium"
                   variant="ghost"
                 >

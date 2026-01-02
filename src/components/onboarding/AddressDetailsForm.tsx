@@ -51,7 +51,8 @@ const AddressDetailsForm = forwardRef<FormHandle, AddressDetailsFormProps>(({ on
 
   useEffect(() => {
     reset(address);
-  }, [address, reset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (sameAsPresent) {
@@ -113,13 +114,26 @@ const AddressDetailsForm = forwardRef<FormHandle, AddressDetailsFormProps>(({ on
             error={errors.present?.line2?.message}
             onChange={() => handleManualInput('present', 'line2')}
           />
-          <Input
-            label="Pincode"
-            {...register('present.pincode')}
-            error={errors.present?.pincode?.message || pincodeError}
-            onBlur={handlePincodeBlur}
-            onChange={() => handleManualInput('present', 'pincode')}
-          />
+
+          {(() => {
+            const { onChange: onPincodeChange, onBlur: onPincodeBlur, ...pincodeRest } = register('present.pincode');
+            return (
+              <Input
+                label="Pincode"
+                {...pincodeRest}
+                error={errors.present?.pincode?.message || pincodeError}
+                onBlur={(e) => {
+                  onPincodeBlur(e);
+                  handlePincodeBlur(e);
+                }}
+                onChange={(e) => {
+                  onPincodeChange(e);
+                  handleManualInput('present', 'pincode');
+                  if (pincodeError) setPincodeError('');
+                }}
+              />
+            );
+          })()}
           {isPincodeLoading && <Loader2 className="h-5 w-5 animate-spin text-cyan-500" />}
           <Input
             label="City"

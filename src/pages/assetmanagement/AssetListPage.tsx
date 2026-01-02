@@ -3,6 +3,7 @@ import { api, AssetRow } from '../../services/api';
 import LoadingSpinner from '../../components/layout/LoadingSpinner';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import PageHeader from '../../components/layout/PageHeader';
 
 const AssetListPage: React.FC = () => {
   const [assets, setAssets] = useState<AssetRow[] | null>(null);
@@ -82,18 +83,22 @@ const AssetListPage: React.FC = () => {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold text-primary-text mb-4">Asset Management - List</h1>
-
-      <div className="flex items-center justify-between mb-4">
-        <Input 
-          type="text" 
-          placeholder="Filter assets..." 
-          value={filterText} 
-          onChange={handleFilterChange} 
-          className="w-1/3" 
-        />
-        <Button onClick={() => {}} className="bg-cta hover:bg-hover-focus text-white">Add New Asset</Button>
-      </div>
+      <PageHeader
+        title="Asset Management"
+        subtitle="Track and manage company assets and equipment"
+        secondaryActions={
+          <Input
+            type="text"
+            placeholder="Filter assets..."
+            value={filterText}
+            onChange={handleFilterChange}
+            className="w-64"
+          />
+        }
+        primaryAction={
+          <Button onClick={() => { }} className="bg-cta hover:bg-hover-focus text-white">Add New Asset</Button>
+        }
+      />
 
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-primary-border">
